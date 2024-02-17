@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Configuration;
+using Newtonsoft.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+/*// https://www.youtube.com/watch?v=TMmhECU3rHs
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).AddNewtonsoftJson(
+    options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+*/
 var app = builder.Build();
 
 app.UseDefaultFiles();

@@ -54,7 +54,7 @@
                 this.post = null;
                 this.loading = true;
 
-                fetch('weatherforecast')
+                fetch('yogaclass')
                     .then(r => r.json())
                     .then(json => {
                         this.post = json;
