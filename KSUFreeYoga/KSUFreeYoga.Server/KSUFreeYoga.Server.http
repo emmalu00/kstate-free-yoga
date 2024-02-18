@@ -1,6 +1,0 @@
-@KSUFreeYoga.Server_HostAddress = http://localhost:5216
-
-GET {{KSUFreeYoga.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
