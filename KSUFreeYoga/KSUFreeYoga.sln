@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KStateFreeYoga.Server", "KS
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "kstatefreeyoga.client", "KStateFreeYoga\kstatefreeyoga.client\kstatefreeyoga.client.esproj", "{4B612BD0-8F16-4FBB-8084-AB7B42B153D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{3AE5A90B-419F-45F2-B6B3-D296232B2F78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{4B612BD0-8F16-4FBB-8084-AB7B42B153D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B612BD0-8F16-4FBB-8084-AB7B42B153D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B612BD0-8F16-4FBB-8084-AB7B42B153D4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{3AE5A90B-419F-45F2-B6B3-D296232B2F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AE5A90B-419F-45F2-B6B3-D296232B2F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AE5A90B-419F-45F2-B6B3-D296232B2F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AE5A90B-419F-45F2-B6B3-D296232B2F78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
