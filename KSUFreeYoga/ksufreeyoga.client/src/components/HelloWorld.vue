@@ -6,8 +6,7 @@
         <div v-if="loading" class="loading">
             Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationvue">https://aka.ms/jspsintegrationvue</a> for more details.
         </div>
-        <v-card>
-        </v-card>
+
         <div v-if="post" class="content">
             <table>
                 <thead>
@@ -55,7 +54,7 @@
                 this.post = null;
                 this.loading = true;
 
-                fetch('weatherforecast')
+                fetch('yogaclass')
                     .then(r => r.json())
                     .then(json => {
                         this.post = json;

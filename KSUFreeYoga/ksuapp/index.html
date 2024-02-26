@@ -2,11 +2,11 @@
 
     <h2>Yoga Class </h2>
     <input id="newYogas"/>&nbsp;
-    <button @click="addNewNotes()"> Add Notes</button>
+    
     <p> {{notes}} </p>
     <p v-for="note in notes">
-        <p>* {{ note}} </p>&nbsp;
-        <button @click="deleteNotes()"> Add Notes</button>
+        <p>* {{ note}} </p>;
+     
     </p>
 </div>
 
@@ -19,7 +19,7 @@
     data() {
       return {
         title: "Yoga App",
-        notes: null
+        notes: []
       } 
      }, 
      methods: {

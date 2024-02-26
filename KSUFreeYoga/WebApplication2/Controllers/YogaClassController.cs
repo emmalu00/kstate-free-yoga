@@ -63,7 +63,5 @@ namespace WebApplication1.Controllers
 
             return new JsonResult(table);
         }
-
-
     }
 }
