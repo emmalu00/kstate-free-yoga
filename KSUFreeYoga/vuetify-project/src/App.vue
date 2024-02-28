@@ -9,7 +9,7 @@
          <v-app-bar-title> K-State Free Yoga </v-app-bar-title>
       </v-app-bar>
       <Yoga/>
-      <HelloWorld />
+      
     </v-main>
   </v-app>
 </template>

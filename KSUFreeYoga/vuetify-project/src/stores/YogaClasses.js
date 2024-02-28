@@ -1,4 +1,3 @@
-// src/stores/YogaClasses.js
 import { defineStore } from 'pinia';
 import api from '@/services/api';
 
@@ -8,7 +7,7 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
     classesWithMats: [],
   }),
   getters: {
-    // Add any getters here if needed
+    // getters??
   },
   actions: {
     async fetchYogaClasses() {
@@ -17,7 +16,7 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         this.classes = response.data;
       } catch (error) {
         console.error('Error fetching yoga classes:', error);
-        // Handle error appropriately
+        // handle errors?
       }
     },
     async fetchYogaClassesWithMats() {
@@ -26,7 +25,7 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         this.classesWithMats = response.data;
       } catch (error) {
         console.error('Error fetching yoga classes with mats:', error);
-        // Handle error appropriately
+        // handle errors?
       }
     },
   },
