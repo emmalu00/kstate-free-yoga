@@ -3,7 +3,7 @@
       <button @click="fetchClasses">Load Yoga Classes</button>
       <ul>
         <li v-for="yogaClass in yogaClasses" :key="yogaClass.id">
-          {{ yogaClass.ClassName }} - {{ yogaClass.ClassDescription }}
+          {{ yogaClass }} 
         </li>
       </ul>
     </div>

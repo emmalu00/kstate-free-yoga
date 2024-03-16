@@ -21,6 +21,6 @@ const app = createApp(App)
 app.use(createPinia());
 app.use(vuetify);
 
-registerPlugins(app)
+//registerPlugins(app)
 
 app.mount('#app')
