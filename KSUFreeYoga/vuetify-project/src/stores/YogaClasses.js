@@ -40,7 +40,7 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         // handle errors?
       }
     },
-    async filterYogaClasses({buildingName, teacherName, matsAvailable}) {
+    async filterYogaClasses(buildingName, teacherName, matsAvailable) {
       try {
         const queryParams = new URLSearchParams({
           buildingName: buildingName,

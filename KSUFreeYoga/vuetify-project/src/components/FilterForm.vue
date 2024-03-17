@@ -4,15 +4,15 @@
     :style="{ backgroundColor: '#f0f0f0' }">
     <v-form ref="form" class="filter-form">
       <h2> Filter </h2>
+
       <v-checkbox
       label="Mats Available">
       </v-checkbox>
       
       <v-select
-      color="purple"
-      v-model="selectedInstructor"
       :items="locations"
-      label="Location">
+      label="Location"
+      v-model="selectedLocation">
       </v-select>
 
       <v-select
@@ -21,7 +21,8 @@
       v-model="selectedInstructor">
       </v-select>
 
-      <v-btn>
+      <v-btn
+      @click="applyFilters">
         Apply
       </v-btn>
 
@@ -46,7 +47,7 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: true
+      matsAvailable: 1
     }
   },
   methods: {
@@ -56,11 +57,18 @@ export default {
       await yogaClassesStore.fetchLocations();
       this.teachers = yogaClassesStore.teacherNames.map(teacher => teacher.TeacherName);
       this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
-      console.log(this.locations);
     },
     reset () {
         this.$refs.form.reset()
     },
+    applyFilters()
+    {
+      this.$emit('FilteringYoga', {
+      matsAvailable: this.matsAvailable,
+      selectedLocation: this.selectedLocation,
+      selectedInstructor: this.selectedInstructor
+    });
+    }
   },
   mounted() {
     this.fetchEvents(); // Call fetchTeacherNames when the component is mounted
