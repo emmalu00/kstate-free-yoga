@@ -10,6 +10,7 @@
       
       <v-select
       color="purple"
+      v-model="selectedInstructor"
       :items="locations"
       label="Location">
       </v-select>
@@ -18,10 +19,6 @@
       :items="teachers"
       label="Instructor"
       v-model="selectedInstructor">
-      </v-select>
-
-      <v-select
-      label="Difficulty Level">
       </v-select>
 
       <v-btn>
@@ -49,6 +46,7 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
+      matsAvailable: true
     }
   },
   methods: {
@@ -57,7 +55,7 @@ export default {
       await yogaClassesStore.fetchTeacherNames();
       await yogaClassesStore.fetchLocations();
       this.teachers = yogaClassesStore.teacherNames.map(teacher => teacher.TeacherName);
-      this.locations = yogaClassesStore.locations.map(location => location.LocationID);
+      this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
       console.log(this.locations);
     },
     reset () {

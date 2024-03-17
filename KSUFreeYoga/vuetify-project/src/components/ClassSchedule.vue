@@ -5,10 +5,10 @@
     <div>
         <v-row no-gutters>
         <v-col cols="2">
-          <FilterForm ></FilterForm>
+          <FilterForm @filter="handleFilter"></FilterForm>
         </v-col>
         <v-col>
-            <Calendar></Calendar>
+          <Calendar :events="filteredEvents"></Calendar>
         </v-col>
         </v-row>
     </div>
@@ -26,11 +26,14 @@ export default {
   },
   data: function() {
     return {
-     
+      filteredEvents: []
     }
   }, 
   methods: {
-    
+    async handleFilter(filters) {
+      // Fetch filtered yoga classes using the provided filters
+      this.$refs.calendar.applyFilters(filterValues)
+    }
   },
   mounted() {
     

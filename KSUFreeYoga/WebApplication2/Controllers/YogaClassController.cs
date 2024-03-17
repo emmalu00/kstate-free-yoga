@@ -22,7 +22,11 @@ namespace WebApplication1.Controllers
         [Route("GetYogaClassInformation")]
         public JsonResult GetYogaClassInformation()
         {
-            string query = "select * from dbo.yogaclass";
+            string query = "select yc.ClassID, yc.ClassName, yc.StartTime, yc.Duration, yc.ClassDate, yc.TeacherName, yc.MatsAvailable, yc.ClassDescription, " +
+                "cl.BuildingName, cl.RoomNumber, cl.LocationAddress " +
+                "from dbo.YogaClass as yc " +
+                "inner join dbo.classlocation as cl " +
+                "on yc.LocationID = cl.LocationID;";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
             SqlDataReader myReader;
@@ -64,6 +68,62 @@ namespace WebApplication1.Controllers
             return new JsonResult(table);
         }
 
+        [HttpGet]
+        [Route("FilterYogaClasses")]
+        public JsonResult FilterYogaClasses(string buildingName, string teacherName, bool? matsAvailable)
+        {
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                List<string> whereClauses = new List<string>();
+
+                if (!string.IsNullOrEmpty(buildingName))
+                {
+                    whereClauses.Add("cl.BuildingName = @BuildingName");
+                }
+                if (!string.IsNullOrEmpty(teacherName))
+                {
+                    whereClauses.Add("yc.TeacherName = @TeacherName");
+                }
+                if (matsAvailable.HasValue)
+                {
+                    whereClauses.Add("yc.MatsAvailable = @MatsAvailable");
+                }
+
+                string whereClause = whereClauses.Any() ? "WHERE " + string.Join(" AND ", whereClauses) : string.Empty;
+
+                string query = $@"SELECT yc.ClassID, yc.ClassName, yc.StartTime, yc.Duration, yc.ClassDate, yc.TeacherName, yc.MatsAvailable, yc.ClassDescription,
+                          cl.BuildingName, cl.RoomNumber, cl.LocationAddress
+                          FROM dbo.YogaClass as yc
+                          INNER JOIN dbo.ClassLocation as cl ON yc.LocationID = cl.LocationID
+                          {whereClause};";
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    if (!string.IsNullOrEmpty(buildingName))
+                    {
+                        myCommand.Parameters.AddWithValue("@BuildingName", buildingName);
+                    }
+                    if (!string.IsNullOrEmpty(teacherName))
+                    {
+                        myCommand.Parameters.AddWithValue("@TeacherName", teacherName);
+                    }
+                    if (matsAvailable.HasValue)
+                    {
+                        myCommand.Parameters.AddWithValue("@MatsAvailable", matsAvailable.Value);
+                    }
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                }
+                myCon.Close();
+            }
+            return new JsonResult(table);
+        }
 
 
         [HttpGet]
@@ -133,7 +193,7 @@ namespace WebApplication1.Controllers
         [Route("GetLocations")]
         public JsonResult GetLocations()
         {
-            string query = "select distinct LocationID from dbo.yogaclass";
+            string query = "select * from dbo.classLocation";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
             SqlDataReader myReader;

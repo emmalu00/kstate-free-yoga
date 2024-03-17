@@ -12,7 +12,9 @@
                 <p><strong>Start Time:</strong> {{ selectedEvent.startTime }}</p>
                 <p><strong>Duration:</strong> {{ selectedEvent.duration }} minutes</p>
                 <p><strong>Teacher:</strong> {{ selectedEvent.teacherName }}</p>
-                <p><strong>Location ID:</strong> {{ selectedEvent.locationID }}</p>
+                <p><strong>Building Name:</strong> {{ selectedEvent.building }}</p>
+                <p><strong>Room:</strong> {{ selectedEvent.room }}</p>
+                <p><strong>Address:</strong> {{ selectedEvent.address }}</p>
                 <p><strong>Mats Available:</strong> {{ selectedEvent.matsAvailable }}</p>
                 <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
             </div>
@@ -31,7 +33,7 @@
     data: function() {
       return {
        showModal: false,
-        selectedEvent: {},
+       selectedEvent: {},
         calendarOptions: {
           plugins: [dayGridPlugin],
           initialView: 'dayGridMonth',
@@ -48,11 +50,14 @@
           duration: clickInfo.event.extendedProps.duration,
           startStr: this.formatDate(clickInfo.event.startStr),
           teacherName: clickInfo.event.extendedProps.teacherName,
-          locationID: clickInfo.event.extendedProps.locationID,
+          building: clickInfo.event.extendedProps.building,
+          room: clickInfo.event.extendedProps.room,
+          address: clickInfo.event.extendedProps.address,
           matsAvailable: clickInfo.event.extendedProps.matsAvailable ? 'Yes' : 'No',
           classDescription: clickInfo.event.extendedProps.classDescription,
         };
         this.showModal = true;
+        console.log(clickInfo.event.extendedProps.locationInfo);
       },
       async fetchEvents() {
         const yogaClassesStore = useYogaClassesStore();
@@ -65,7 +70,9 @@
               startTime: yogaClass.StartTime,
               duration: yogaClass.Duration,
               teacherName: yogaClass.TeacherName,
-              locationID: yogaClass.LocationID,
+              building: yogaClass.BuildingName,
+              room: yogaClass.RoomNumber, 
+              address: yogaClass.LocationAddress,
               matsAvailable: yogaClass.MatsAvailable,
               classDescription: yogaClass.ClassDescription,
             },
@@ -80,9 +87,7 @@
       },
       formatDate(dateString) {
           const newDate = dateString.substr(0, 19);
-          console.log(newDate);
           const date = new Date(newDate);
-          console.log(date);
           const formattedDate = date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
