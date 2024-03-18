@@ -6,6 +6,7 @@
       <h2> Filter </h2>
 
       <v-checkbox
+      v-model="matsAvailable"
       label="Mats Available">
       </v-checkbox>
       
@@ -47,7 +48,7 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: 1
+      matsAvailable: true
     }
   },
   methods: {
