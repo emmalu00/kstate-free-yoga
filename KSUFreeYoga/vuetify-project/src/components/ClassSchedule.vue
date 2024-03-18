@@ -5,7 +5,7 @@
     <div>
         <v-row no-gutters>
         <v-col cols="2">
-          <FilterForm @FilteringYoga="receiveFilters"> </FilterForm>
+          <FilterForm @FilteringYoga="receiveFilters" @ResetFilters="fetchEvents"> </FilterForm>
         </v-col>
         <v-col>
             <Calendar :Yogaevents="testEvents"></Calendar>
@@ -67,7 +67,7 @@ export default {
       async receiveFilters(filters) {
         console.log(filters);
         const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.filterYogaClasses(filters.selectedLocation, filters.selectedInstructor, true);
+        await yogaClassesStore.filterYogaClasses(filters.selectedLocation, filters.selectedInstructor, filters.matsAvailable);
         this.filteredEvents = yogaClassesStore.filteredClasses.map((yogaClass) => {
           return {
             title: yogaClass.ClassName,

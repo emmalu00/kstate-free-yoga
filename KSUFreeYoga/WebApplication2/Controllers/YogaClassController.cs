@@ -70,7 +70,7 @@ namespace WebApplication1.Controllers
 
         [HttpGet]
         [Route("FilterYogaClasses")]
-        public JsonResult FilterYogaClasses(string buildingName, string teacherName, bool? matsAvailable)
+        public JsonResult FilterYogaClasses(string? buildingName, string? teacherName, bool? matsAvailable)
         {
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
@@ -213,37 +213,44 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [Route("AddYogaClassInformation")]
-        public JsonResult AddYogaClassInformation(int classID, string className, string startTime, 
-            int duration, string classDate, string teacherName, int locationID, 
-            int matsAvailable, string classDescription)
+        public JsonResult AddYogaClassInformation(string className, string startTime,
+        int duration, string classDate, string teacherName, string buildingName,
+        string roomNumber, string locationAddress, int matsAvailable,
+        string classDescription)
         {
-            string query = "insert into dbo.yogaclass values(@classID, @className, @startTime, @duration, @classDate, " +
-                "@teacherName, @locationID, @matsAvailable, @classDescription)";
+            // You will call a stored procedure here instead of a raw SQL query.
+            string procedureName = "AddYogaClassWithLocation";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
             SqlDataReader myReader;
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                using (SqlCommand myCommand = new SqlCommand(procedureName, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@classID", classID);
+                    myCommand.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters for the stored procedure here
                     myCommand.Parameters.AddWithValue("@className", className);
                     myCommand.Parameters.AddWithValue("@startTime", startTime);
                     myCommand.Parameters.AddWithValue("@duration", duration);
                     myCommand.Parameters.AddWithValue("@classDate", classDate);
-                    myCommand.Parameters.AddWithValue("@teacherName", teacherName);
-                    myCommand.Parameters.AddWithValue("@locationID", locationID);
+                    myCommand.Parameters.AddWithValue("@teacherName", teacherName); // You'll likely need to change this to TeacherID if you normalize your tables.
+                    myCommand.Parameters.AddWithValue("@buildingName", buildingName);
+                    myCommand.Parameters.AddWithValue("@roomNumber", roomNumber);
+                    myCommand.Parameters.AddWithValue("@locationAddress", locationAddress);
                     myCommand.Parameters.AddWithValue("@matsAvailable", matsAvailable);
                     myCommand.Parameters.AddWithValue("@classDescription", classDescription);
+
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
                     myCon.Close();
                 }
             }
-            return new JsonResult("Added Sucessfully");
+            return new JsonResult("Added Successfully");
         }
+
 
         [HttpDelete]
         [Route("DeleteYogaClassInformation")]

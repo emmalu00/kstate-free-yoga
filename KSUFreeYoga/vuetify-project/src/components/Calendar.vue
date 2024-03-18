@@ -8,14 +8,14 @@
             <div class="modal-content">
                 <span class="close" @click="showModal = false">&times;</span>
                 <h2>{{ selectedEvent.className }}</h2>
-                <p><strong>Date:</strong> {{ selectedEvent.startStr }}</p>
-                <p><strong>Start Time:</strong> {{ selectedEvent.startTime }}</p>
-                <p><strong>Duration:</strong> {{ selectedEvent.duration }} minutes</p>
-                <p><strong>Teacher:</strong> {{ selectedEvent.teacherName }}</p>
-                <p><strong>Building Name:</strong> {{ selectedEvent.building }}</p>
-                <p><strong>Room:</strong> {{ selectedEvent.room }}</p>
-                <p><strong>Address:</strong> {{ selectedEvent.address }}</p>
-                <p><strong>Mats Available:</strong> {{ selectedEvent.matsAvailable }}</p>
+                <p> <strong>{{ selectedEvent.startStr }}</strong>   |    <strong>{{ selectedEvent.startTime }}</strong></p>
+                <p> {{ selectedEvent.duration }} minutes</p>
+                <v-divider></v-divider>
+                <p><strong> {{ selectedEvent.building }}</strong> - <strong> {{ selectedEvent.room }}</strong> </p>
+                <p> {{ selectedEvent.address }}</p>
+                <v-divider></v-divider>
+                <p><strong>Instructor: </strong> {{ selectedEvent.teacherName }}</p>
+                <p><strong>Mats Provided:</strong> {{ selectedEvent.matsAvailable }}</p>
                 <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
             </div>
         </div>
@@ -36,7 +36,6 @@
       immediate: true,
       handler(newVal) {
         this.calendarOptions.events = newVal;
-        console.log(this.calendarOptions.events);
         this.$nextTick(() => {
             this.refetchCalendarEvents();
           });
@@ -130,7 +129,7 @@
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 30%;
 }
 
 .close {
@@ -151,5 +150,11 @@
   padding: 1%;
 }
 
+p {
+  line-height: 2.0
+}
 
+h2 {
+  color: 	#bf98b2
+}
 </style>

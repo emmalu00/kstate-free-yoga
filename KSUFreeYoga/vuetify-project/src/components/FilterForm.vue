@@ -29,7 +29,7 @@
 
       <v-btn
       @click="reset">
-        Reset
+        Reset Filters
       </v-btn>
       
     </v-form>
@@ -60,7 +60,12 @@ export default {
       this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
     },
     reset () {
-        this.$refs.form.reset()
+        this.$refs.form.reset();
+        this.$emit('ResetFilters', {
+      matsAvailable: this.matsAvailable,
+      selectedLocation: this.selectedLocation,
+      selectedInstructor: this.selectedInstructor
+    });
     },
     applyFilters()
     {
