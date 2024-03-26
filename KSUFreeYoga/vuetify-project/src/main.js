@@ -11,7 +11,7 @@ import { registerPlugins } from '@/plugins'
 import App from './App.vue'
 
 import vuetify from './plugins/vuetify';
-
+import router from './router'
 
 // Composables
 import { createApp } from 'vue'
@@ -19,7 +19,9 @@ import { createPinia } from 'pinia';
 
 const app = createApp(App)
 app.use(createPinia());
+app.use(router)
 app.use(vuetify);
+
 
 //registerPlugins(app)
 

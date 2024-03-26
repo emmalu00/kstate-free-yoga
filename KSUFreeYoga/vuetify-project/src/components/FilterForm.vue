@@ -48,7 +48,7 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: true
+      matsAvailable: false
     }
   },
   methods: {
