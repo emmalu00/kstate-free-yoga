@@ -66,15 +66,17 @@ export default {
       },
       async receiveFilters(filters) {
         console.log(filters);
+        const firstName = this.getFirstName(filters.selectedInstructor);
+        const lastName = this.getLastName(filters.selectedInstructor);
         const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.filterYogaClasses(filters.selectedLocation, filters.selectedInstructor, filters.matsAvailable);
+        await yogaClassesStore.filterYogaClasses(filters.selectedLocation, firstName, lastName, filters.matsAvailable);
         this.filteredEvents = yogaClassesStore.filteredClasses.map((yogaClass) => {
           return {
             title: yogaClass.ClassName,
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
             extendedProps: {
               startTime: yogaClass.StartTime,
-              endTime: yogaClass.endTime,
+              endTime: yogaClass.EndTime,
               instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
               building: yogaClass.BuildingName,
               room: yogaClass.RoomNumber, 
@@ -90,6 +92,16 @@ export default {
       getInstructorName(first, last)
       {
         return `${first} ${last}`;
+      },
+      getFirstName(fullName)
+      {
+        if (!fullName) return '';
+        return fullName.split(" ")[0];
+      }, 
+      getLastName(fullName)
+      {
+        if (!fullName) return '';
+        return fullName.split(" ")[1];;
       }
   },
   mounted() {

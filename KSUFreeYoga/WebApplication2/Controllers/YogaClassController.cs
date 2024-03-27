@@ -45,32 +45,9 @@ namespace WebApplication1.Controllers
             return new JsonResult(table);
         }
 
-
-        [HttpGet]
-        [Route("GetYogaClassInformationWithMats")]
-        public JsonResult GetYogaClassInformationWithMats()
-        {
-            string query = "select * from dbo.yogaclass where MatsAvailable = 1";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-            return new JsonResult(table);
-        }
-
         [HttpGet]
         [Route("FilterYogaClasses")]
-        public JsonResult FilterYogaClasses(string? buildingName, string? teacherName, bool? matsAvailable)
+        public JsonResult FilterYogaClasses(string? buildingName, string? teacherFirstName, string? teacherLastName, bool? matsAvailable)
         {
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
@@ -84,9 +61,13 @@ namespace WebApplication1.Controllers
                 {
                     whereClauses.Add("cl.BuildingName = @BuildingName");
                 }
-                if (!string.IsNullOrEmpty(teacherName))
+                if (!string.IsNullOrEmpty(teacherFirstName))
                 {
-                    whereClauses.Add("yc.TeacherName = @TeacherName");
+                    whereClauses.Add("i.FirstName = @FirstName");
+                }
+                if (!string.IsNullOrEmpty(teacherLastName))
+                {
+                    whereClauses.Add("i.LastName = @LastName");
                 }
                 if (matsAvailable.HasValue)
                 {
@@ -95,11 +76,12 @@ namespace WebApplication1.Controllers
 
                 string whereClause = whereClauses.Any() ? "WHERE " + string.Join(" AND ", whereClauses) : string.Empty;
 
-                string query = $@"SELECT yc.ClassID, yc.ClassName, yc.StartTime, yc.Duration, yc.ClassDate, yc.TeacherName, yc.MatsAvailable, yc.ClassDescription,
-                          cl.BuildingName, cl.RoomNumber, cl.LocationAddress
-                          FROM dbo.YogaClass as yc
-                          INNER JOIN dbo.ClassLocation as cl ON yc.LocationID = cl.LocationID
-                          {whereClause};";
+                string query = $@"select yc.ClassID, yc.ClassName, yc.StartTime, yc.EndTime, yc.ClassDate, yc.MatsAvailable, yc.ClassDescription,
+                cl.BuildingName, cl.RoomNumber, cl.LocationAddress, i.FirstName, i.LastName
+                from dbo.YogaClass as yc
+                inner join dbo.instructor i on yc.InstructorID = i.InstructorID
+                inner join dbo.classLocation cl on yc.LocationID = cl.LocationID
+                {whereClause}; ";
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
@@ -107,9 +89,13 @@ namespace WebApplication1.Controllers
                     {
                         myCommand.Parameters.AddWithValue("@BuildingName", buildingName);
                     }
-                    if (!string.IsNullOrEmpty(teacherName))
+                    if (!string.IsNullOrEmpty(teacherFirstName))
                     {
-                        myCommand.Parameters.AddWithValue("@TeacherName", teacherName);
+                        myCommand.Parameters.AddWithValue("@FirstName", teacherFirstName);
+                    }
+                    if (!string.IsNullOrEmpty(teacherLastName))
+                    {
+                        myCommand.Parameters.AddWithValue("@LastName", teacherLastName);
                     }
                     if (matsAvailable.HasValue)
                     {

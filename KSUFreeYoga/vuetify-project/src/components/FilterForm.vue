@@ -48,7 +48,7 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: false
+      matsAvailable: null
     }
   },
   methods: {
@@ -56,7 +56,7 @@ export default {
       const yogaClassesStore = useYogaClassesStore();
       await yogaClassesStore.fetchTeacherNames();
       await yogaClassesStore.fetchLocations();
-      this.teachers = yogaClassesStore.teacherNames.map(teacher => teacher.TeacherName);
+      this.teachers = yogaClassesStore.teacherNames.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
       this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
     },
     reset () {
@@ -69,11 +69,26 @@ export default {
     },
     applyFilters()
     {
+      console.log(this.selectedLocation);
       this.$emit('FilteringYoga', {
       matsAvailable: this.matsAvailable,
       selectedLocation: this.selectedLocation,
       selectedInstructor: this.selectedInstructor
     });
+    }, 
+    getFirstName(fullName)
+    {
+      return fullName.split(" ")[0];
+    }, 
+    getLastName(fullName)
+    {
+      // Split the fullName string into an array of words
+      const parts = fullName.split(" ");
+      // If there's only one part, return an empty string for the last name
+      if (parts.length === 1) return "";
+      // Return the last element of the array as the last name
+      // This simplistic approach assumes the last name is the last part of the fullName
+      return parts[parts.length - 1];
     }
   },
   mounted() {

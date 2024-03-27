@@ -40,15 +40,18 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         // handle errors?
       }
     },
-    async filterYogaClasses(buildingName, teacherName, matsAvailable) {
+    async filterYogaClasses(buildingName, teacherFirstName, teacherLastName, matsAvailable) {
       try {
         let queryParams = new URLSearchParams();
 
         if (buildingName) {
           queryParams.set('buildingName', buildingName);
         }
-        if (teacherName) {
-          queryParams.set('teacherName', teacherName);
+        if (teacherFirstName) {
+          queryParams.set('teacherFirstName', teacherFirstName);
+        }
+        if (teacherLastName) {
+          queryParams.set('teacherLastName', teacherLastName);
         }
         if (matsAvailable !== undefined && matsAvailable !== null) {
           queryParams.set('matsAvailable', matsAvailable);
