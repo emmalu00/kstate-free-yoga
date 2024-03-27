@@ -8,13 +8,12 @@
             <div class="modal-content">
                 <span class="close" @click="showModal = false">&times;</span>
                 <h2>{{ selectedEvent.className }}</h2>
-                <p> <strong>{{ selectedEvent.startStr }}</strong>   |    <strong>{{ selectedEvent.startTime }}</strong></p>
-                <p> {{ selectedEvent.duration }} minutes</p>
+                <p> <strong>{{ selectedEvent.startStr }}</strong>   |    <strong>{{ selectedEvent.startTime }} - {{ selectedEvent.endTime }}</strong></p>
                 <v-divider></v-divider>
                 <p><strong> {{ selectedEvent.building }}</strong> - <strong> {{ selectedEvent.room }}</strong> </p>
                 <p> {{ selectedEvent.address }}</p>
                 <v-divider></v-divider>
-                <p><strong>Instructor: </strong> {{ selectedEvent.teacherName }}</p>
+                <p><strong>Instructor: </strong> {{ selectedEvent.instructorName }}</p>
                 <p><strong>Mats Provided:</strong> {{ selectedEvent.matsAvailable }}</p>
                 <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
             </div>
@@ -62,13 +61,12 @@
 
     },
       handleEventClick(clickInfo) {
-        console.log("handle event click is hit");
         this.selectedEvent = {
           className: clickInfo.event.title,
           startTime: this.formatTime(clickInfo.event.extendedProps.startTime),
-          duration: clickInfo.event.extendedProps.duration,
+          endTime: this.formatTime(clickInfo.event.extendedProps.endTime),
           startStr: this.formatDate(clickInfo.event.startStr),
-          teacherName: clickInfo.event.extendedProps.teacherName,
+          instructorName: clickInfo.event.extendedProps.instructorName,
           building: clickInfo.event.extendedProps.building,
           room: clickInfo.event.extendedProps.room,
           address: clickInfo.event.extendedProps.address,

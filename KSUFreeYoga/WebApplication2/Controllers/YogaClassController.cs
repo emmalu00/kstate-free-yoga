@@ -22,11 +22,11 @@ namespace WebApplication1.Controllers
         [Route("GetYogaClassInformation")]
         public JsonResult GetYogaClassInformation()
         {
-            string query = "select yc.ClassID, yc.ClassName, yc.StartTime, yc.Duration, yc.ClassDate, yc.TeacherName, yc.MatsAvailable, yc.ClassDescription, " +
-                "cl.BuildingName, cl.RoomNumber, cl.LocationAddress " +
+            string query = "select yc.ClassID, yc.ClassName, yc.StartTime, yc.EndTime, yc.ClassDate, yc.MatsAvailable, yc.ClassDescription, " +
+                "cl.BuildingName, cl.RoomNumber, cl.LocationAddress, i.FirstName, i.LastName " +
                 "from dbo.YogaClass as yc " +
-                "inner join dbo.classlocation as cl " +
-                "on yc.LocationID = cl.LocationID;";
+                "inner join dbo.instructor i on yc.InstructorID = i.InstructorID " +
+                "inner join dbo.classLocation cl on yc.LocationID = cl.LocationID; ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
             SqlDataReader myReader;
@@ -171,7 +171,7 @@ namespace WebApplication1.Controllers
         [Route("GetTeacherNames")]
         public JsonResult GetTeacherNames()
         {
-            string query = "select distinct TeacherName from dbo.yogaclass";
+            string query = "select * from dbo.Instructor";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
             SqlDataReader myReader;

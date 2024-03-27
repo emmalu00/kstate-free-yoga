@@ -47,8 +47,8 @@ export default {
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
             extendedProps: {
               startTime: yogaClass.StartTime,
-              duration: yogaClass.Duration,
-              teacherName: yogaClass.TeacherName,
+              endTime: yogaClass.EndTime,
+              instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
               building: yogaClass.BuildingName,
               room: yogaClass.RoomNumber, 
               address: yogaClass.LocationAddress,
@@ -74,8 +74,8 @@ export default {
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
             extendedProps: {
               startTime: yogaClass.StartTime,
-              duration: yogaClass.Duration,
-              teacherName: yogaClass.TeacherName,
+              endTime: yogaClass.endTime,
+              instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
               building: yogaClass.BuildingName,
               room: yogaClass.RoomNumber, 
               address: yogaClass.LocationAddress,
@@ -86,7 +86,10 @@ export default {
         });;
         console.log(this.filteredEvents);
         this.testEvents = this.filteredEvents;
-
+      }, 
+      getInstructorName(first, last)
+      {
+        return `${first} ${last}`;
       }
   },
   mounted() {
