@@ -40,14 +40,23 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         // handle errors?
       }
     },
-    async filterYogaClasses({buildingName, teacherName, matsAvailable}) {
+    async filterYogaClasses(buildingName, teacherName, matsAvailable) {
       try {
-        const queryParams = new URLSearchParams({
-          buildingName: buildingName,
-          teacherName: teacherName,
-          matsAvailable: matsAvailable
-        }).toString();
-        const response = await api.get(`/YogaClass/FilterYogaClasses?${queryParams}`);
+        let queryParams = new URLSearchParams();
+
+        if (buildingName) {
+          queryParams.set('buildingName', buildingName);
+        }
+        if (teacherName) {
+          queryParams.set('teacherName', teacherName);
+        }
+        if (matsAvailable !== undefined && matsAvailable !== null) {
+          queryParams.set('matsAvailable', matsAvailable);
+        }
+    
+        const queryString = queryParams.toString();
+        const response = await api.get(`/YogaClass/FilterYogaClasses${queryString ? `?${queryString}` : ''}`);
+      
         this.filteredClasses = response.data;
       } catch (error) {
         console.error('Error fetching filtered yoga classes:', error);

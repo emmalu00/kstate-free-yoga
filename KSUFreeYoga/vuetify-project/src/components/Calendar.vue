@@ -1,21 +1,20 @@
 <template>
         <v-sheet class="pa-2 ma-2">
           <v-card>
-            <FullCalendar class="calendar" :options="calendarOptions" />
+            <FullCalendar ref="fullCalendar" class="calendar" :options="calendarOptions" />
           </v-card>
         </v-sheet>
         <div v-if="showModal" class="modal">
             <div class="modal-content">
                 <span class="close" @click="showModal = false">&times;</span>
                 <h2>{{ selectedEvent.className }}</h2>
-                <p><strong>Date:</strong> {{ selectedEvent.startStr }}</p>
-                <p><strong>Start Time:</strong> {{ selectedEvent.startTime }}</p>
-                <p><strong>Duration:</strong> {{ selectedEvent.duration }} minutes</p>
-                <p><strong>Teacher:</strong> {{ selectedEvent.teacherName }}</p>
-                <p><strong>Building Name:</strong> {{ selectedEvent.building }}</p>
-                <p><strong>Room:</strong> {{ selectedEvent.room }}</p>
-                <p><strong>Address:</strong> {{ selectedEvent.address }}</p>
-                <p><strong>Mats Available:</strong> {{ selectedEvent.matsAvailable }}</p>
+                <p> <strong>{{ selectedEvent.startStr }}</strong>   |    <strong>{{ selectedEvent.startTime }} - {{ selectedEvent.endTime }}</strong></p>
+                <v-divider></v-divider>
+                <p><strong> {{ selectedEvent.building }}</strong> - <strong> {{ selectedEvent.room }}</strong> </p>
+                <p> {{ selectedEvent.address }}</p>
+                <v-divider></v-divider>
+                <p><strong>Instructor: </strong> {{ selectedEvent.instructorName }}</p>
+                <p><strong>Mats Provided:</strong> {{ selectedEvent.matsAvailable }}</p>
                 <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
             </div>
         </div>
@@ -27,9 +26,21 @@
   import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
  
   export default {
+    props: ['Yogaevents'],
     components: {
       FullCalendar 
     },
+    watch: {
+    Yogaevents: {
+      immediate: true,
+      handler(newVal) {
+        this.calendarOptions.events = newVal;
+        this.$nextTick(() => {
+            this.refetchCalendarEvents();
+          });
+      }
+    }
+  },
     data: function() {
       return {
        showModal: false,
@@ -43,13 +54,19 @@
       }
     }, 
     methods: {
+      refetchCalendarEvents() {
+      let calendarApi = this.$refs.fullCalendar.getApi();
+      calendarApi.refetchEvents();
+      console.log(this.calendarOptions.events);
+
+    },
       handleEventClick(clickInfo) {
         this.selectedEvent = {
           className: clickInfo.event.title,
           startTime: this.formatTime(clickInfo.event.extendedProps.startTime),
-          duration: clickInfo.event.extendedProps.duration,
+          endTime: this.formatTime(clickInfo.event.extendedProps.endTime),
           startStr: this.formatDate(clickInfo.event.startStr),
-          teacherName: clickInfo.event.extendedProps.teacherName,
+          instructorName: clickInfo.event.extendedProps.instructorName,
           building: clickInfo.event.extendedProps.building,
           room: clickInfo.event.extendedProps.room,
           address: clickInfo.event.extendedProps.address,
@@ -57,33 +74,6 @@
           classDescription: clickInfo.event.extendedProps.classDescription,
         };
         this.showModal = true;
-        console.log(clickInfo.event.extendedProps.locationInfo);
-      },
-      async fetchEvents() {
-        const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.fetchYogaClasses();
-        this.calendarOptions.events = yogaClassesStore.classes.map((yogaClass) => {
-          return {
-            title: yogaClass.ClassName,
-            date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
-            extendedProps: {
-              startTime: yogaClass.StartTime,
-              duration: yogaClass.Duration,
-              teacherName: yogaClass.TeacherName,
-              building: yogaClass.BuildingName,
-              room: yogaClass.RoomNumber, 
-              address: yogaClass.LocationAddress,
-              matsAvailable: yogaClass.MatsAvailable,
-              classDescription: yogaClass.ClassDescription,
-            },
-          };
-        });
-      },
-      combineDateTime(date, time) {
-        const newDate = date.substr(0, 10);
-        const dateTimeStr = `${newDate}T${time}`;
-        const dateTime = new Date(dateTimeStr);
-        return dateTime;
       },
       formatDate(dateString) {
           const newDate = dateString.substr(0, 19);
@@ -105,9 +95,15 @@
           const time12 = `${hours12Num}:${paddedMinutes} ${suffix}`;
           return time12;
       },
+      async getYogaEvents() {
+        return this.Yogaevents;
+      }
     },
     mounted() {
-      this.fetchEvents();
+      //this.fetchEvents();
+      // console.log(this.getYogaEvents());
+      // this.calendarOptions.events = this.getYogaEvents();
+      //console.log(this.calendarOptions.events);
     },
   }
   </script>  
@@ -131,7 +127,7 @@
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 30%;
 }
 
 .close {
@@ -152,5 +148,11 @@
   padding: 1%;
 }
 
+p {
+  line-height: 2.0
+}
 
+h2 {
+  color: 	#bf98b2
+}
 </style>
