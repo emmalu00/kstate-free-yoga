@@ -2,10 +2,15 @@
   <v-app>
     <v-main>
       <v-app-bar>
-         <v-app-bar-title> K-State Free Yoga </v-app-bar-title>
+        <RouterLink to="/" class="app-bar-title-link" style="text-decoration: none; color: black; margin-left: 20px;">
+          <v-app-bar-title> K-State Free Yoga </v-app-bar-title>
+        </RouterLink>
          <v-spacer></v-spacer>
-         <RouterLink to="/schedule" active-class="active">
+         <RouterLink to="/schedule" style="text-decoration: none; color: black; margin-right: 20px;">
           Shcueidle
+         </RouterLink>
+         <RouterLink to="/about" style="text-decoration: none; color: black; margin-right: 20px;">
+          About
          </RouterLink>
       </v-app-bar>
       <router-view></router-view>
