@@ -6,7 +6,16 @@
         <v-row no-gutters>
         <v-col cols="2">
           <FilterForm @FilteringYoga="receiveFilters" @ResetFilters="fetchEvents"> </FilterForm>
-          <AddForm @addingClass="addClassToSchedule"></AddForm>
+          <!-- <AddForm @addingClass="addClassToSchedule"></AddForm> -->
+          <v-sheet class="pa-2 ma-2">
+            <v-card>
+              <v-btn @click="showAddForm = !showAddForm"> Add Class </v-btn>
+            </v-card>
+          </v-sheet>
+          
+          <v-dialog v-model="showAddForm" persistent style="width: 30%;">
+            <AddForm @addingClass="addClassToSchedule" @close="showAddForm = false"></AddForm>
+          </v-dialog>
         </v-col>
         <v-col>
             <Calendar :Yogaevents="testEvents"></Calendar>
@@ -37,7 +46,8 @@ export default {
           eventClick: null,
         },
       testEvents: [],
-      filteredEvents: []
+      filteredEvents: [], 
+      showAddForm: false
     }
   }, 
   methods: {

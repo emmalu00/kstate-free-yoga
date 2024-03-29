@@ -2,27 +2,29 @@
     <v-sheet class="pa-2 ma-2">
       <v-card
       :style="{ backgroundColor: '#f0f0f0' }">
-      <v-form ref="form" class="add-form">
+      <v-form ref="form"class="add-form">
         <h2> Add Class </h2>
   
         <v-text-field
         label="Class Name"
-        v-model="className">
+        v-model="className"
+        :rules="classNameRules"
+        required>
         </v-text-field>
 
- 
         <v-text-field
         label="Date in menu"
         :active="helpme"
         v-model="selectedDate"
+        :rules="dateRules"
         readonly
+        required
         >
         <v-menu
           v-model="helpme"
           :close-on-content-click="false"
           activator="parent"
-          transition="scale-transition"
-        >
+          transition="scale-transition">
             <v-date-picker
             v-if="helpme"
             v-model="selectedDate"
@@ -32,48 +34,39 @@
         </v-menu>
       </v-text-field>
 
-
+ 
         <v-combobox
         :items="timeOptions"
         label="Select a start time"
         v-model="selectedStartTime"
-        return-object
+        :rules="startTimeRules"
+        required
         ></v-combobox>
 
         <v-combobox
         :items="timeOptions"
         label="Select an end time"
         v-model="selectedEndTime"
-        return-object
+        :rules="endTimeRules"
+        required
         ></v-combobox>
 
-        
-
-
         <p> Mats Available </p>
-            <v-btn-toggle
-            rounded="0"
-            group
-            >
+            <v-btn-toggle rounded="0" group mandatory>
                 <v-btn value="Yes"> Yes </v-btn>
                 <v-btn value="No"> No </v-btn>
             </v-btn-toggle>
-
         
         <v-text-field
         label="Class Description"
-        v-model="classDescription">
-        </v-text-field>
-    
+        v-model="classDescription"
+        :rules="descriptionRules"
+        required>
+        </v-text-field> 
   
-        <v-btn @click="addClass">
-          Add Class
-        </v-btn>
-  
-        <v-btn
-        @click="reset">
-          Reset 
-        </v-btn>
+        <v-btn @click="addClass" block>Add Class </v-btn>
+        <v-btn @click="reset" block> Reset </v-btn>
+        <v-btn @click="closeForm" block> Close </v-btn>
         
       </v-form>
       </v-card>
@@ -96,41 +89,90 @@
         classLocation: 1, 
         instructor: 1, 
         matsAvailable: true,
-        classDescription: null
+        classDescription: null,
+        classNameRules: [
+            v => !!v || 'Class name is required',
+            ],
+        dateRules: [
+        v => !!v || 'Date is required',
+        ],
+        startTimeRules: [
+        v => !!v || 'Start time is required',
+        ],
+        endTimeRules: [
+        v => !!v || 'End time is required',
+        ],
+        descriptionRules: [
+        v => !!v || 'Class description is required',
+        ],
+        rules: [
+        value => {
+          if (value) return true
+
+          return 'You must enter a first name.'
+        },
+      ],
+      
       }
     },
     methods: {
     async fetchEvents() {
       // api cals for locations and teachers
     },
+    async validate () {
+        const { valid } = await this.$refs.form.validate()
+
+        if (valid) {
+            console.log("lets add a class");
+            this.$emit('addingClass', {
+            className: this.className,
+            startTime: this.selectedStartTime,
+            endTime: this.selectedEndTime,
+            classDate: this.selectedDate,
+            instructorID: this.instructor,
+            locationID: this.classLocation,
+            matsAvailable: this.matsAvailable,
+            classDescription: this.classDescription
+        });
+        }
+        else 
+        {
+            console.log("we cannot add a clsas")
+        }
+    },
+    async validating ()
+    {
+        const { valid } = await this.$refs.form.validate()
+
+        if (valid) alert('Form is valid')
+    },
     reset () {
         this.$refs.form.reset();
     },
-    addClass()
-    {
-    //   this.$emit('addingClass', {
-    //   className: this.className, 
-    //   startTime: this.convertTimeFormat(this.selectedStartTime), 
-    //   endTime: this.convertTimeFormat(this.selectedEndTime), 
-    //   classDate: this.selectedDate.toISOString().substring(0, 10),
-    //   instructorID: this.instructor, 
-    //   locationID: this.classLocation,
-    //   matsAvailable: this.matsAvailable, 
-    //   classDescription: this.classDescription
-    // });
+    async addClass() {
+        const { valid } = await this.$refs.form.validate()
 
-    console.log(this.selectedDate)
-        this.$emit('addingClass', {
-        className: this.className, 
-        startTime: this.selectedStartTime, 
-        endTime: this.selectedEndTime, 
-        classDate: this.selectedDate,
-        instructorID: this.instructor, 
-        locationID: this.classLocation,
-        matsAvailable: this.matsAvailable, 
-        classDescription: this.classDescription
+        if (valid) {
+            console.log("lets add a class");
+            this.$emit('addingClass', {
+            className: this.className,
+            startTime: this.selectedStartTime,
+            endTime: this.selectedEndTime,
+            classDate: this.selectedDate,
+            instructorID: this.instructor,
+            locationID: this.classLocation,
+            matsAvailable: this.matsAvailable,
+            classDescription: this.classDescription
         });
+        }
+        else 
+        {
+            console.log("we cannot add a clsas")
+        }
     }, 
+    closeForm() {
+      this.$emit('close'); // Emit an event to close the modal
+    },
     convertTimeFormat(timeString) {
     const parts = timeString.split(' ');
     const timeParts = parts[0].split(':');
@@ -148,7 +190,7 @@
     const formattedHours = hours.toString().padStart(2, '0');
     
     return `${formattedHours}:${minutes}:00`;
-    }
+    },
 
   },
     computed: {
@@ -166,6 +208,10 @@
         }
       }
       return times;
+    },
+    formattedDate() {
+      // Format selectedDate to a more user-friendly format or keep as is
+      return this.selectedDate ? new Date(this.selectedDate).toLocaleDateString() : '';
     },
   },
   }
