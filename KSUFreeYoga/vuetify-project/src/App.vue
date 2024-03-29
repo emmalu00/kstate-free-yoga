@@ -21,7 +21,6 @@
 
 <script setup>
 import YogaCalandar from './components/YogaCalandar.vue';
-import AddYogaClassForm from './components/AddYogaClassForm.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
 import CalanderSample from './components/CalanderSample.vue';
 import Events from './views/Events.vue'

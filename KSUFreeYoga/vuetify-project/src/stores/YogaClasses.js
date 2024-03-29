@@ -13,15 +13,15 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
     // getters??
   },
   actions: {
-    async fetchYogaClasses() {
-      try {
-        const response = await api.get('/YogaClass/GetYogaClassInformation');
-        this.classes = response.data;
-      } catch (error) {
-        console.error('Error fetching yoga classes:', error);
-        // handle errors?
-      }
-    },
+    // async fetchYogaClasses() {
+    //   try {
+    //     const response = await api.get('/YogaClass');
+    //     this.classes = response.data;
+    //   } catch (error) {
+    //     console.error('Error fetching yoga classes:', error);
+    //     // handle errors?
+    //   }
+    // },
     async fetchTeacherNames() {
       try {
         const response = await api.get('/YogaClass/GetTeacherNames');
@@ -58,7 +58,7 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         }
     
         const queryString = queryParams.toString();
-        const response = await api.get(`/YogaClass/FilterYogaClasses${queryString ? `?${queryString}` : ''}`);
+        const response = await api.get(`/YogaClass${queryString ? `?${queryString}` : ''}`);
       
         this.filteredClasses = response.data;
       } catch (error) {
@@ -66,26 +66,59 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         // handle errors?
       }
     },
-    async addYogaClassInformation({ classID, className, startTime, duration, classDate, teacherName, locationID, matsAvailable, classDescription }) {
+    async addClass(newClass)
+    {
       try {
-        const response = await api.post('/YogaClass/AddYogaClassInformation', {
-          classID,
-          className,
-          startTime,
-          duration,
-          classDate,
-          teacherName,
-          locationID,
-          matsAvailable,
-          classDescription
-        });
-        console.log('Class added successfully:', response.data);
-        // Optionally, you could fetch the updated list of classes here or update the state directly
-        // this.fetchYogaClasses();
+        console.log(newClass);
+  
+        const response = await api.post('/YogaClass/AddClass', newClass);
+        
+        if (response.data) {
+          console.log('Class added successfully:', response.data);
+          // You might want to do something with the response data here
+        }
       } catch (error) {
-        console.error('Error adding yoga class information:', error);
-        // Implement error handling logic as needed
+        console.error('Error adding yoga class:', error);
+        // Handle errors appropriately
       }
     },
+    async addYogaClass(className, startTime, endTime, classDate, instructorID, locationID, matsAvailable, classDescription) {
+      try {
+
+        console.log({
+          className: className, 
+          startTime: startTime, 
+          endTime: endTime, 
+          classDate: classDate, 
+          instructorID: instructorID, 
+          locationID: locationID,
+          matsAvailable: matsAvailable, 
+          classDescription: classDescription
+        });
+  
+        const response = await api.post('/YogaClass/AddYogaClassInformation', {
+          className, 
+          startTime, 
+          endTime, 
+          classDate, 
+          instructorID, 
+          locationID, 
+          matsAvailable, 
+          classDescription
+        }).then(async () => {
+          await this.hydrate()
+        });
+        
+        if (response.data) {
+          console.log('Class added successfully:', response.data);
+          // You might want to do something with the response data here
+        }
+      } catch (error) {
+        console.error('Error adding yoga class:', error);
+        // Handle errors appropriately
+      }
+    }
+    
+    
   },
 });

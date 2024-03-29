@@ -6,6 +6,7 @@
         <v-row no-gutters>
         <v-col cols="2">
           <FilterForm @FilteringYoga="receiveFilters" @ResetFilters="fetchEvents"> </FilterForm>
+          <AddForm @addingClass="addClassToSchedule"></AddForm>
         </v-col>
         <v-col>
             <Calendar :Yogaevents="testEvents"></Calendar>
@@ -19,6 +20,8 @@ import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path t
 import FilterForm from './FilterForm.vue';
 import Calendar from './Calendar.vue';
 import dayGridPlugin from '@fullcalendar/daygrid'
+import AddForm from './AddForm.vue';
+
 
 export default {
   components: {
@@ -40,8 +43,8 @@ export default {
   methods: {
     async fetchEvents() {
         const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.fetchYogaClasses();
-        this.testEvents = yogaClassesStore.classes.map((yogaClass) => {
+        await yogaClassesStore.filterYogaClasses(null, null, null, null);
+        this.testEvents = yogaClassesStore.filteredClasses.map((yogaClass) => {
           return {
             title: yogaClass.ClassName,
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
@@ -86,9 +89,25 @@ export default {
             },
           };
         });;
-        console.log(this.filteredEvents);
         this.testEvents = this.filteredEvents;
       }, 
+      async addClassToSchedule(newClass)
+      {
+        console.log({
+        className: newClass.className, 
+        startTime: newClass.startTime, 
+        endTime: newClass.endTime, 
+        classDate: newClass.classDate, 
+        instructorID: newClass.instructorID, 
+        locationID: newClass.locationID,
+        matsAvailable: newClass.matsAvailable, 
+        classDescription: newClass.classDescription
+      });
+
+        const yogaClassesStore = useYogaClassesStore();
+        await yogaClassesStore.addClass(newClass);
+         // this.fetchEvents();
+      },
       getInstructorName(first, last)
       {
         return `${first} ${last}`;
