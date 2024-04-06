@@ -13,22 +13,12 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
     // getters??
   },
   actions: {
-    // async fetchYogaClasses() {
-    //   try {
-    //     const response = await api.get('/YogaClass');
-    //     this.classes = response.data;
-    //   } catch (error) {
-    //     console.error('Error fetching yoga classes:', error);
-    //     // handle errors?
-    //   }
-    // },
     async fetchTeacherNames() {
       try {
         const response = await api.get('/YogaClass/GetTeacherNames');
         this.teacherNames = response.data;
       } catch (error) {
         console.error('Error fetching yoga classes:', error);
-        // handle errors?
       }
     },
     async fetchLocations() {
@@ -37,42 +27,39 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         this.locations = response.data;
       } catch (error) {
         console.error('Error fetching yoga classes:', error);
-        // handle errors?
       }
     },
-    async filterYogaClasses(buildingName, teacherFirstName, teacherLastName, matsAvailable) {
+    async filterYogaClasses(buildingName, instructorFirst, instructorLast, matsProvided) {
+      console.log(instructorFirst);
+      console.log(instructorLast);
       try {
         let queryParams = new URLSearchParams();
 
         if (buildingName) {
           queryParams.set('buildingName', buildingName);
         }
-        if (teacherFirstName) {
-          queryParams.set('teacherFirstName', teacherFirstName);
+        if (instructorFirst) {
+          queryParams.set('instructorFirst', instructorFirst);
         }
-        if (teacherLastName) {
-          queryParams.set('teacherLastName', teacherLastName);
+        if (instructorLast) {
+          queryParams.set('instructorLast', instructorLast);
         }
-        if (matsAvailable !== undefined && matsAvailable !== null) {
-          queryParams.set('matsAvailable', matsAvailable);
+        if (matsProvided !== undefined && matsProvided !== null) {
+          queryParams.set('matsProvided', matsProvided);
         }
     
         const queryString = queryParams.toString();
         const response = await api.get(`/YogaClass${queryString ? `?${queryString}` : ''}`);
-      
         this.filteredClasses = response.data;
       } catch (error) {
         console.error('Error fetching filtered yoga classes:', error);
-        // handle errors?
       }
     },
     async addClass(newClass)
     {
       try {
-        console.log(newClass);
   
-        const response = await api.post('/YogaClass/AddClass', newClass);
-        
+        const response = await api.post('/YogaClass', newClass);
         if (response.data) {
           console.log('Class added successfully:', response.data);
           // You might want to do something with the response data here
@@ -82,42 +69,21 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
         // Handle errors appropriately
       }
     },
-    async addYogaClass(className, startTime, endTime, classDate, instructorID, locationID, matsAvailable, classDescription) {
+    async deleteClass(id)
+    {
+      console.log(id);
       try {
-
-        console.log({
-          className: className, 
-          startTime: startTime, 
-          endTime: endTime, 
-          classDate: classDate, 
-          instructorID: instructorID, 
-          locationID: locationID,
-          matsAvailable: matsAvailable, 
-          classDescription: classDescription
-        });
-  
-        const response = await api.post('/YogaClass/AddYogaClassInformation', {
-          className, 
-          startTime, 
-          endTime, 
-          classDate, 
-          instructorID, 
-          locationID, 
-          matsAvailable, 
-          classDescription
-        }).then(async () => {
-          await this.hydrate()
-        });
-        
+        const response = await api.delete(`/YogaClass?id=${id}`);
         if (response.data) {
-          console.log('Class added successfully:', response.data);
-          // You might want to do something with the response data here
+          console.log('Class deleted successfully:', response.data);
+          // You might want to do something with the confirmation response here
         }
       } catch (error) {
-        console.error('Error adding yoga class:', error);
+        console.error('Error deleting yoga class:', error);
         // Handle errors appropriately
       }
     }
+  
     
     
   },

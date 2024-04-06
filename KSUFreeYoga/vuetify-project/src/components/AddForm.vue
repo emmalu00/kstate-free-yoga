@@ -1,76 +1,150 @@
 <template>
     <v-sheet class="pa-2 ma-2">
-      <v-card
-      :style="{ backgroundColor: '#f0f0f0' }">
-      <v-form ref="form"class="add-form">
-        <h2> Add Class </h2>
-  
-        <v-text-field
-        label="Class Name"
-        v-model="className"
-        :rules="classNameRules"
-        required>
-        </v-text-field>
+      <v-card :style="{ backgroundColor: '#f0f0f0' }">
+        <v-form ref="form"class="add-form">
+            <h2> Add Class </h2>
+    
+            <v-text-field
+            label="Class Name"
+            v-model="className"
+            :rules="rules"
+            required
+            variant="outlined"
+            density="compact">
+            </v-text-field>
 
-        <v-text-field
-        label="Date in menu"
-        :active="helpme"
-        v-model="selectedDate"
-        :rules="dateRules"
-        readonly
-        required
-        >
-        <v-menu
-          v-model="helpme"
-          :close-on-content-click="false"
-          activator="parent"
-          transition="scale-transition">
-            <v-date-picker
-            v-if="helpme"
+            <v-text-field
+            label="Date in menu"
+            :active="helpme"
             v-model="selectedDate"
-            :min="minDate"
-            label="Select a date"
-        ></v-date-picker>
-        </v-menu>
-      </v-text-field>
+            :rules="rules"
+            readonly
+            required
+            variant="outlined"
+            density="compact"
+            >
+                <v-menu
+                v-model="helpme"
+                :close-on-content-click="false"
+                activator="parent"
+                transition="scale-transition">
+                    <v-date-picker
+                    v-if="helpme"
+                    v-model="selectedDate"
+                    :min="minDate"
+                    label="Select a date"
+                    ></v-date-picker>
+                </v-menu>
+            </v-text-field>
 
- 
-        <v-combobox
-        :items="timeOptions"
-        label="Select a start time"
-        v-model="selectedStartTime"
-        :rules="startTimeRules"
-        required
-        ></v-combobox>
+            <v-row>
+                <v-col>
+                    Start Time
+                </v-col>
+                <v-col cols="3">
+                    <v-select v-model="startH" density="compact" :items="hours" :rules="rules" variant="outlined"> </v-select>
+                </v-col>
+                <v-col cols="auto" style="font-weight: bold; margin-top: 2%; padding: 2% 0%"> : </v-col>
+                <v-col cols="3">
+                    <v-select v-model="startM" density="compact" :items="minutes" :rules="rules" variant="outlined"> </v-select>
+                </v-col>
+                <v-col cols="3">
+                    <v-select v-model="startAMPM" density="compact" :items="AMPM" :rules="rules" variant="outlined"> </v-select>  
+                </v-col>
+            </v-row> 
 
-        <v-combobox
-        :items="timeOptions"
-        label="Select an end time"
-        v-model="selectedEndTime"
-        :rules="endTimeRules"
-        required
-        ></v-combobox>
+            <v-row>
+                <v-col>
+                    End Time
+                </v-col>
+                <v-col cols="3">
+                    <v-select v-model="endH" density="compact" :items="hours" :rules="rules" variant="outlined"> </v-select>
+                </v-col>
+                <v-col cols="auto" style="font-weight: bold; margin-top: 2%; padding: 2% 0%"> : </v-col>
+                <v-col cols="3">
+                    <v-select v-model="endM" density="compact" :items="minutes" :rules="rules" variant="outlined"> </v-select>
+                </v-col>
+                <v-col cols="3">
+                    <v-select v-model="endAMPM" density="compact" :items="AMPM" :rules="rules" variant="outlined"> </v-select>  
+                </v-col>
+            </v-row>
 
-        <p> Mats Available </p>
-            <v-btn-toggle rounded="0" group mandatory>
-                <v-btn value="Yes"> Yes </v-btn>
-                <v-btn value="No"> No </v-btn>
-            </v-btn-toggle>
-        
-        <v-text-field
-        label="Class Description"
-        v-model="classDescription"
-        :rules="descriptionRules"
-        required>
-        </v-text-field> 
-  
-        <v-btn @click="addClass" block>Add Class </v-btn>
-        <v-btn @click="reset" block> Reset </v-btn>
-        <v-btn @click="closeForm" block> Close </v-btn>
-        
-      </v-form>
+            <v-row>
+                <v-col cols="8"> 
+                    <v-select
+                    :rules="rules"
+                    :items="teachers"
+                    item-title="text"
+                    item-value="id"
+                    label="Instructor"
+                    variant="outlined"
+                    density="compact"
+                    v-model="selectedInstructor">
+                    </v-select>
+                </v-col>
+                <v-col cols="4">
+                    <v-btn variant="outlined"> 
+                        Add New ...
+                    </v-btn>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="8"> 
+                    <v-select
+                    :rules="rules"
+                    :items="locations"
+                    item-title="text"
+                    item-value="id"
+                    label="Location"
+                    variant="outlined"
+                    density="compact"
+                    v-model="selectedLocation"
+                    >
+                    </v-select>
+                </v-col>
+                <v-col cols="4">
+                    <v-btn variant="outlined"> 
+                        Add New ...
+                    </v-btn>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="4">
+                   Mats Available
+                </v-col>
+                <v-col cols="4">
+                    <div class="d-flex flex-column" style="padding-bottom: 5%">
+                        <v-btn-toggle
+                        v-model="matsAvailable"
+                        divided
+                        density="compact"
+                        mandatory>
+                          <v-btn value="true"> Yes </v-btn>
+                          <v-btn value="false"> No </v-btn>
+                        </v-btn-toggle>
+                    </div>
+                </v-col>
+            </v-row> 
+
+            <p> Description </p>
+            <v-textarea
+            label="Write a brief description here."
+            v-model="classDescription"
+            row-height="25"
+            rows="2"
+            variant="outlined"
+            auto-grow
+            shaped
+            ></v-textarea>
+
+            <v-btn @click="addClass" block>Add Class </v-btn>
+            <v-btn @click="reset" block> Reset </v-btn>
+            <v-btn @click="closeForm" block> Close </v-btn>
+            
+        </v-form>
       </v-card>
-      
     </v-sheet>
   </template>
   
@@ -80,71 +154,45 @@
   export default {
     data() {
       return {
-        selectedStartTime: null,
-        selectedEndTime: null,
+        AMPM: ['AM', 'PM'],
+        startH: null,
+        startM: null,
+        startAMPM: null, 
+        endH: null,
+        endM: null,
+        endAMPM: null, 
+        selectedLocation: null, 
+        selectedInstructor: null, 
         selectedDate: null, // Bind the selected date to this data property
         minDate: new Date().toISOString().substr(0, 10), // Today's date in YYYY-MM-DD format
         helpme: false,
         className: null, 
-        classLocation: 1, 
-        instructor: 1, 
-        matsAvailable: true,
+        matsAvailable: null,
         classDescription: null,
-        classNameRules: [
-            v => !!v || 'Class name is required',
-            ],
-        dateRules: [
-        v => !!v || 'Date is required',
-        ],
-        startTimeRules: [
-        v => !!v || 'Start time is required',
-        ],
-        endTimeRules: [
-        v => !!v || 'End time is required',
-        ],
-        descriptionRules: [
-        v => !!v || 'Class description is required',
-        ],
+        locations: [], 
+        teachers: [],
         rules: [
-        value => {
-          if (value) return true
-
-          return 'You must enter a first name.'
-        },
-      ],
-      
+        v => !!v || 'Required',
+        ],
       }
     },
     methods: {
     async fetchEvents() {
-      // api cals for locations and teachers
-    },
-    async validate () {
-        const { valid } = await this.$refs.form.validate()
-
-        if (valid) {
-            console.log("lets add a class");
-            this.$emit('addingClass', {
-            className: this.className,
-            startTime: this.selectedStartTime,
-            endTime: this.selectedEndTime,
-            classDate: this.selectedDate,
-            instructorID: this.instructor,
-            locationID: this.classLocation,
-            matsAvailable: this.matsAvailable,
-            classDescription: this.classDescription
+        const yogaClassesStore = useYogaClassesStore();
+        await yogaClassesStore.fetchTeacherNames();
+        await yogaClassesStore.fetchLocations();
+        this.teachers = yogaClassesStore.teacherNames.map((teacher) => {
+            return {
+                text: `${teacher.FirstName} ${teacher.LastName}`,
+                id: teacher.InstructorID
+            }
         });
-        }
-        else 
-        {
-            console.log("we cannot add a clsas")
-        }
-    },
-    async validating ()
-    {
-        const { valid } = await this.$refs.form.validate()
-
-        if (valid) alert('Form is valid')
+        this.locations = yogaClassesStore.locations.map((location) => {
+            return {
+                text: `${location.BuildingName}, ${location.RoomNumber}`,
+                id: location.LocationID
+            }
+        });
     },
     reset () {
         this.$refs.form.reset();
@@ -153,66 +201,56 @@
         const { valid } = await this.$refs.form.validate()
 
         if (valid) {
-            console.log("lets add a class");
             this.$emit('addingClass', {
             className: this.className,
-            startTime: this.selectedStartTime,
-            endTime: this.selectedEndTime,
+            startTime: this.convertTime(this.startH, this.startM, this.startAMPM),
+            endTime: this.convertTime(this.endH, this.endM, this.endAMPM),
             classDate: this.selectedDate,
-            instructorID: this.instructor,
-            locationID: this.classLocation,
+            instructorID: this.selectedInstructor,
+            locationID: this.selectedLocation,
             matsAvailable: this.matsAvailable,
             classDescription: this.classDescription
         });
-        }
-        else 
-        {
-            console.log("we cannot add a clsas")
+        this.$emit('close'); 
         }
     }, 
     closeForm() {
-      this.$emit('close'); // Emit an event to close the modal
+        this.$emit('close'); // Emit an event to close the modal
     },
-    convertTimeFormat(timeString) {
-    const parts = timeString.split(' ');
-    const timeParts = parts[0].split(':');
-    
-    let hours = parseInt(timeParts[0], 10);
-    const minutes = timeParts[1];
-    
-    if (parts[1] === 'PM' && hours < 12) {
-        hours += 12;
-    } else if (parts[1] === 'AM' && hours === 12) {
-        hours = 0; 
-    }
-    
-
-    const formattedHours = hours.toString().padStart(2, '0');
-    
-    return `${formattedHours}:${minutes}:00`;
-    },
-
-  },
-    computed: {
-    timeOptions() {
-      const times = [];
-      for (let hour = 6; hour <= 20; hour++) {
-        // Adjust for AM/PM format
-        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? 'AM' : 'PM';
-        const lastMinute = hour === 20 ? 0 : 55;
-        for (let minute = 0; minute <= lastMinute; minute += 5) {
-          // Format minutes to always be two digits
-          const displayMinute = minute.toString().padStart(2, '0');
-          times.push(`${displayHour}:${displayMinute} ${ampm}`);
+    convertTime(hour, minute, AMorPM)
+    {
+        let hourInt = parseInt(hour, 10);
+        if (hourInt === 12) {
+            hourInt = AMorPM.toUpperCase() === 'AM' ? 0 : 12;
         }
-      }
-      return times;
+        else if (AMorPM.toUpperCase() === 'PM') {
+            hourInt += 12;
+        }
+        let formattedHour = hourInt.toString().padStart(2, '0');
+        let formattedMinute = minute.toString().padStart(2, '0');
+        return `${formattedHour}:${formattedMinute}:00`;
     },
-    formattedDate() {
-      // Format selectedDate to a more user-friendly format or keep as is
-      return this.selectedDate ? new Date(this.selectedDate).toLocaleDateString() : '';
     },
+    computed: {
+    hours() {
+        const times = [];
+        for (let hour = 6; hour <= 20; hour++) {
+            const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+            times.push(`${displayHour}`);
+        }
+        return times;
+    },
+    minutes() {
+        const times = [];
+        for (let min = 0; min < 60; min += 5) {
+            const displayMinute = min.toString().padStart(2, '0');
+            times.push(`${displayMinute}`);
+        }
+        return times;
+    },
+  },
+  mounted() {
+    this.fetchEvents(); // Call fetchTeacherNames when the component is mounted
   },
   }
   </script>
@@ -223,6 +261,7 @@
     
   }
   
+
   
   </style>
   

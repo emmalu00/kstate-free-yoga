@@ -9,7 +9,7 @@
           <!-- <AddForm @addingClass="addClassToSchedule"></AddForm> -->
           <v-sheet class="pa-2 ma-2">
             <v-card>
-              <v-btn @click="showAddForm = !showAddForm"> Add Class </v-btn>
+              <v-btn @click="showAddForm = !showAddForm" block> Add Class </v-btn>
             </v-card>
           </v-sheet>
           
@@ -59,6 +59,7 @@ export default {
             title: yogaClass.ClassName,
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
             extendedProps: {
+              classID: yogaClass.ClassID,
               startTime: yogaClass.StartTime,
               endTime: yogaClass.EndTime,
               instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
@@ -88,6 +89,7 @@ export default {
             title: yogaClass.ClassName,
             date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
             extendedProps: {
+              classID: yogaClass.ClassID,
               startTime: yogaClass.StartTime,
               endTime: yogaClass.EndTime,
               instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
@@ -100,19 +102,10 @@ export default {
           };
         });;
         this.testEvents = this.filteredEvents;
+        console.log(this.filteredEvents);
       }, 
       async addClassToSchedule(newClass)
       {
-        console.log({
-        className: newClass.className, 
-        startTime: newClass.startTime, 
-        endTime: newClass.endTime, 
-        classDate: newClass.classDate, 
-        instructorID: newClass.instructorID, 
-        locationID: newClass.locationID,
-        matsAvailable: newClass.matsAvailable, 
-        classDescription: newClass.classDescription
-      });
 
         const yogaClassesStore = useYogaClassesStore();
         await yogaClassesStore.addClass(newClass);

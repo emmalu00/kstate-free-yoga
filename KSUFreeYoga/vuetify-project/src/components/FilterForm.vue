@@ -5,10 +5,19 @@
     <v-form ref="form" class="filter-form">
       <h2> Filter </h2>
 
-      <v-checkbox
-      v-model="matsAvailable"
-      label="Mats Available">
-      </v-checkbox>
+      <v-row>
+        <v-col>
+          <p> Mats Available </p>
+          <v-btn-toggle
+          v-model="matsAvailable"
+          divided
+          density="compact">
+            <v-btn value="true"> Yes </v-btn>
+            <v-btn value="false"> No </v-btn>
+          </v-btn-toggle>
+        </v-col>
+      </v-row>
+      
       
       <v-select
       :items="locations"
@@ -40,6 +49,7 @@
 
 <script>
 import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
+import { useInstructorsStore } from '@/stores/Instructors';
 
 export default {
   data() {
@@ -54,9 +64,12 @@ export default {
   methods: {
     async fetchEvents() {
       const yogaClassesStore = useYogaClassesStore();
-      await yogaClassesStore.fetchTeacherNames();
+      const instructorsStore = useInstructorsStore();
+
       await yogaClassesStore.fetchLocations();
-      this.teachers = yogaClassesStore.teacherNames.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
+      await instructorsStore.fetchInstructors();
+
+      this.teachers = instructorsStore.instructors.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
       this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
     },
     reset () {
@@ -69,7 +82,7 @@ export default {
     },
     applyFilters()
     {
-      console.log(this.selectedLocation);
+      console.log(this.selectedInstructor);
       this.$emit('FilteringYoga', {
       matsAvailable: this.matsAvailable,
       selectedLocation: this.selectedLocation,

@@ -16,6 +16,16 @@
                 <p><strong>Instructor: </strong> {{ selectedEvent.instructorName }}</p>
                 <p><strong>Mats Provided:</strong> {{ selectedEvent.matsAvailable }}</p>
                 <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
+                <v-divider></v-divider>
+                <v-row>
+                  <v-col cols="auto" @click="deleteClassFromSchedule">
+                    <v-btn> Delete this class </v-btn>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-btn> Update this class </v-btn>
+                  </v-col>
+                </v-row>
+                
             </div>
         </div>
   </template>
@@ -57,11 +67,11 @@
       refetchCalendarEvents() {
       let calendarApi = this.$refs.fullCalendar.getApi();
       calendarApi.refetchEvents();
-      console.log(this.calendarOptions.events);
-
+      //console.log(this.calendarOptions.events);
     },
       handleEventClick(clickInfo) {
         this.selectedEvent = {
+          classID: clickInfo.event.extendedProps.classID,
           className: clickInfo.event.title,
           startTime: this.formatTime(clickInfo.event.extendedProps.startTime),
           endTime: this.formatTime(clickInfo.event.extendedProps.endTime),
@@ -74,6 +84,14 @@
           classDescription: clickInfo.event.extendedProps.classDescription,
         };
         this.showModal = true;
+      },
+      async deleteClassFromSchedule()
+      {
+        console.log(this.selectedEvent.classID);
+        const yogaClassesStore = useYogaClassesStore();
+        await yogaClassesStore.deleteClass(this.selectedEvent.classID);
+        this.refetchCalendarEvents();
+        console.log(this.selectedEvent.classID);
       },
       formatDate(dateString) {
           const newDate = dateString.substr(0, 19);
