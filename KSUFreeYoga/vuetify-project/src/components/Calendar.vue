@@ -1,7 +1,7 @@
 <template>
         <v-sheet class="pa-2 ma-2">
-          <v-card>
-            <FullCalendar ref="fullCalendar" class="calendar" :options="calendarOptions" />
+          <v-card variant="outlined">
+            <FullCalendar ref="fullCalendar"  :options="calendarOptions" style="height: 30;"/>
           </v-card>
         </v-sheet>
         <div v-if="showModal" class="modal">
@@ -34,7 +34,12 @@
   import FullCalendar from '@fullcalendar/vue3'
   import dayGridPlugin from '@fullcalendar/daygrid'
   import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
- 
+  //import TimeGrid from './components/TimeGrid.vue';
+  import timeGridPlugin from '@fullcalendar/timegrid'
+  import listPlugin from '@fullcalendar/list';
+
+
+
   export default {
     props: ['Yogaevents'],
     components: {
@@ -55,11 +60,23 @@
       return {
        showModal: false,
        selectedEvent: {},
-        calendarOptions: {
-          plugins: [dayGridPlugin],
+       calendarOptions: {
+          plugins: [listPlugin, dayGridPlugin],
           initialView: 'dayGridMonth',
           events: [], 
           eventClick: this.handleEventClick,
+          headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth,listWeek' // user can switch between the two
+          },
+          buttonText: {
+            dayGridMonth: 'Month View', // Custom text for the 'dayGridMonth' button
+            listWeek: 'List View' // Custom text for the 'listWeek' button
+          },
+          height: 750, 
+          eventColor: '#644874',
+          eventDisplay: 'block',
         }
       }
     }, 
@@ -113,20 +130,12 @@
           const time12 = `${hours12Num}:${paddedMinutes} ${suffix}`;
           return time12;
       },
-      async getYogaEvents() {
-        return this.Yogaevents;
-      }
-    },
-    mounted() {
-      //this.fetchEvents();
-      // console.log(this.getYogaEvents());
-      // this.calendarOptions.events = this.getYogaEvents();
-      //console.log(this.calendarOptions.events);
     },
   }
   </script>  
 
 <style scoped>
+
 .modal {
   display: block;
   position: fixed;
@@ -146,6 +155,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 30%;
+  border-radius: 10px;
 }
 
 .close {
@@ -171,6 +181,22 @@ p {
 }
 
 h2 {
-  color: 	#bf98b2
+  color: 	#644874
 }
+
+.fc {
+  padding: 1%;
+}
+
+::v-deep .fc-button
+{
+  background-color: #BF98B2  !important;
+}
+
+::v-deep .fc-button-active {
+  background-color: #927396 !important; /* Even darker blue */
+  color: white; /* White text */
+  border-color: #004085; /* Corresponding border color */
+}
+
 </style>

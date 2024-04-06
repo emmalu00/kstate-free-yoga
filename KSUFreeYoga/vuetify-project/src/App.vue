@@ -14,6 +14,7 @@
          </RouterLink>
       </v-app-bar>
       <router-view></router-view>
+      
     </v-main>
     
   </v-app>
@@ -23,8 +24,16 @@
 import YogaCalandar from './components/YogaCalandar.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
 import CalanderSample from './components/CalanderSample.vue';
+import TimeGrid from './components/TimeGrid.vue';
+
 import Events from './views/Events.vue'
+import FullCalendar from '@fullcalendar/vue3'
+
 import { RouterLink } from 'vue-router'
+import { Calendar } from '@fullcalendar/core'
+import timeGridPlugin from '@fullcalendar/timegrid'
+
+
 
   //import axios
   //ref 

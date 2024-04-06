@@ -4,12 +4,12 @@
     </div>
     <div>
         <v-row no-gutters>
-        <v-col cols="2">
+        <v-col cols="3">
           <FilterForm @FilteringYoga="receiveFilters" @ResetFilters="fetchEvents"> </FilterForm>
           <!-- <AddForm @addingClass="addClassToSchedule"></AddForm> -->
           <v-sheet class="pa-2 ma-2">
             <v-card>
-              <v-btn @click="showAddForm = !showAddForm" block> Add Class </v-btn>
+              <v-btn @click="showAddForm = !showAddForm" block variant="outlined"> Add Class </v-btn>
             </v-card>
           </v-sheet>
           
@@ -134,7 +134,8 @@ export default {
 
 <style scoped>
 h1 {
-    color: #b195c1;
+    color: #644874;
     text-align: center;
+    margin-top: 1%;
 }
 </style>

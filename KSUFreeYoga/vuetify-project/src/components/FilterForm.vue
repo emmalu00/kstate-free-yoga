@@ -1,25 +1,20 @@
 <template>
   <v-sheet class="pa-2 ma-2">
-    <v-card
-    :style="{ backgroundColor: '#f0f0f0' }">
+    <v-card variant="outlined">
     <v-form ref="form" class="filter-form">
       <h2> Filter </h2>
 
-      <v-row>
-        <v-col>
-          <p> Mats Available </p>
-          <v-btn-toggle
-          v-model="matsAvailable"
-          divided
-          density="compact">
-            <v-btn value="true"> Yes </v-btn>
-            <v-btn value="false"> No </v-btn>
-          </v-btn-toggle>
-        </v-col>
-      </v-row>
-      
+      <v-select
+      variant="outlined"
+      :items="matsOptions"
+      item-title="text"
+      item-value="id"
+      label="Mats Provided?"
+      v-model="matsAvailable" >
+      </v-select>
       
       <v-select
+      variant="outlined"
       :items="locations"
       label="Location"
       v-model="selectedLocation">
@@ -27,19 +22,26 @@
 
       <v-select
       :items="teachers"
+      variant="outlined"
       label="Instructor"
       v-model="selectedInstructor">
       </v-select>
 
-      <v-btn
-      @click="applyFilters">
-        Apply
-      </v-btn>
-
-      <v-btn
-      @click="reset">
-        Reset Filters
-      </v-btn>
+      <div class="button-container">
+        <v-btn
+          class="filter-buttons"
+          variant="outlined"
+          @click="applyFilters">
+            Apply
+        </v-btn>
+      
+        <v-btn
+        class="filter-buttons"
+          variant="outlined"
+          @click="reset">
+            Reset Filters
+        </v-btn>
+      </div>
       
     </v-form>
     </v-card>
@@ -58,7 +60,11 @@ export default {
       selectedInstructor: null, // Data property for the selected instructor
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: null
+      matsAvailable: null,
+      matsOptions: [ 
+        {text: 'Yes', id: true},
+        {text: 'No', id: false}
+      ]
     }
   },
   methods: {
@@ -71,6 +77,7 @@ export default {
 
       this.teachers = instructorsStore.instructors.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
       this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
+      console.log(this.matsOptions);
     },
     reset () {
         this.$refs.form.reset();
@@ -112,8 +119,20 @@ export default {
 
 <style scoped>
 .filter-form {
-  padding: 2%
-  
+  padding: 2%;
+  background-color: #e5d5e0
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between; /* Or space-around, depending on your preference */
+}
+
+::v-deep .v-field__overlay {
+  background-color: white !important;
+}
+
+.filter-buttons {
+  background-color: #927396;
+}
 </style>
