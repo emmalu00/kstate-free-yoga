@@ -13,7 +13,7 @@
             </v-card>
           </v-sheet>
           
-          <v-dialog v-model="showAddForm" persistent style="width: 30%;">
+          <v-dialog v-model="showAddForm" persistent style="width: 40%;">
             <AddForm @addingClass="addClassToSchedule" @close="showAddForm = false"></AddForm>
           </v-dialog>
         </v-col>

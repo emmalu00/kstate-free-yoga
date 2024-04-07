@@ -3,7 +3,6 @@
     <v-card variant="outlined">
     <v-form ref="form" class="filter-form">
       <h2> Filter </h2>
-
       <v-select
       variant="outlined"
       :items="matsOptions"
@@ -12,7 +11,7 @@
       label="Mats Provided?"
       v-model="matsAvailable" >
       </v-select>
-      
+
       <v-select
       variant="outlined"
       :items="locations"
@@ -128,7 +127,7 @@ export default {
   justify-content: space-between; /* Or space-around, depending on your preference */
 }
 
-::v-deep .v-field__overlay {
+:deep(.v-field__overlay) {
   background-color: white !important;
 }
 

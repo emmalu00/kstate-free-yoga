@@ -8,23 +8,34 @@
             <div class="modal-content">
                 <span class="close" @click="showModal = false">&times;</span>
                 <h2>{{ selectedEvent.className }}</h2>
-                <p> <strong>{{ selectedEvent.startStr }}</strong>   |    <strong>{{ selectedEvent.startTime }} - {{ selectedEvent.endTime }}</strong></p>
+                <p style="color: grey; line-height: 1.0; font-size: 15px; " > {{selectedEvent.classDescription }}</p>
+                <div class="event-container">
+                  <v-icon icon="fa-regular fa-calendar"></v-icon>
+                  <p><strong>{{ selectedEvent.startStr }}</strong> </p>
+                </div>
+                <div class="event-container">
+                  <v-icon icon="fa-regular fa-clock"> </v-icon>
+                  <p> <strong>{{ selectedEvent.startTime }} - {{ selectedEvent.endTime }}</strong></p>
+                </div>
                 <v-divider></v-divider>
-                <p><strong> {{ selectedEvent.building }}</strong> - <strong> {{ selectedEvent.room }}</strong> </p>
-                <p> {{ selectedEvent.address }}</p>
+                <div class="event-container">
+                  <v-icon icon="fa-solid fa-location-dot"> </v-icon>
+                  <p><strong> {{ selectedEvent.building }}</strong> - <strong> {{ selectedEvent.room }}</strong> </p>
+                </div>
+                <p style="margin-left: 35px;"> {{ selectedEvent.address }}</p>
+
                 <v-divider></v-divider>
-                <p><strong>Instructor: </strong> {{ selectedEvent.instructorName }}</p>
-                <p><strong>Mats Provided:</strong> {{ selectedEvent.matsAvailable }}</p>
-                <p><strong>Description:</strong> {{ selectedEvent.classDescription }}</p>
+                <div class="event-container">
+                  <v-icon color="green" v-if="selectedEvent.matsAvailable" icon="fa-solid fa-check"> </v-icon>
+                  <v-icon color="red" v-else icon="fa-solid fa-xmark"> </v-icon>
+                  <p><strong>Mats Provided</strong> </p>
+                </div>
+                <div class="event-container">
+                  <v-icon icon="fa-regular fa-user"> </v-icon>
+                  <p><strong>Instructor: </strong> {{ selectedEvent.instructorName }}</p>
+                </div>
                 <v-divider></v-divider>
-                <v-row>
-                  <v-col cols="auto" @click="deleteClassFromSchedule">
-                    <v-btn> Delete this class </v-btn>
-                  </v-col>
-                  <v-col cols="auto">
-                    <v-btn> Update this class </v-btn>
-                  </v-col>
-                </v-row>
+                <v-btn style="margin-top: 10px"  variant="outlined" @click="deleteClassFromSchedule" block> Delete this class </v-btn>
                 
             </div>
         </div>
@@ -97,7 +108,7 @@
           building: clickInfo.event.extendedProps.building,
           room: clickInfo.event.extendedProps.room,
           address: clickInfo.event.extendedProps.address,
-          matsAvailable: clickInfo.event.extendedProps.matsAvailable ? 'Yes' : 'No',
+          matsAvailable: clickInfo.event.extendedProps.matsAvailable,
           classDescription: clickInfo.event.extendedProps.classDescription,
         };
         this.showModal = true;
@@ -154,7 +165,7 @@
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 30%;
+  width: 35%;
   border-radius: 10px;
 }
 
@@ -188,15 +199,22 @@ h2 {
   padding: 1%;
 }
 
-::v-deep .fc-button
+:deep(.fc-button)
 {
   background-color: #BF98B2  !important;
 }
 
-::v-deep .fc-button-active {
+:deep(.fc-button-active) {
   background-color: #927396 !important; /* Even darker blue */
   color: white; /* White text */
   border-color: #004085; /* Corresponding border color */
+}
+
+.event-container {
+  display: flex; /* This will layout the children (v-icon and p) in a row */
+  align-items: center; /* This will vertically center the children in the container */
+  gap: 10px;
+  margin-top: 5px;
 }
 
 </style>
