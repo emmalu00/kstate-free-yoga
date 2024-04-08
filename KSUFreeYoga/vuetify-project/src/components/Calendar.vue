@@ -112,14 +112,16 @@
           classDescription: clickInfo.event.extendedProps.classDescription,
         };
         this.showModal = true;
+        console.log(this.selectedEvent.classID)
       },
       async deleteClassFromSchedule()
       {
+        console.log(this.selectedEvent);
+        // const yogaClassesStore = useYogaClassesStore();
+        // await yogaClassesStore.deleteClass(this.selectedEvent.classID);
         console.log(this.selectedEvent.classID);
-        const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.deleteClass(this.selectedEvent.classID);
-        this.refetchCalendarEvents();
-        console.log(this.selectedEvent.classID);
+        this.$emit('deletingClass', this.selectedEvent.classID);
+        this.showModal = false;
       },
       formatDate(dateString) {
           const newDate = dateString.substr(0, 19);

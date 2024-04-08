@@ -30,8 +30,6 @@ export const useYogaClassesStore = defineStore('yogaClasses', {
       }
     },
     async filterYogaClasses(buildingName, instructorFirst, instructorLast, matsProvided) {
-      console.log(instructorFirst);
-      console.log(instructorLast);
       try {
         let queryParams = new URLSearchParams();
 

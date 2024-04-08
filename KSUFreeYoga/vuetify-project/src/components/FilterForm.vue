@@ -101,17 +101,13 @@ export default {
     }, 
     getLastName(fullName)
     {
-      // Split the fullName string into an array of words
       const parts = fullName.split(" ");
-      // If there's only one part, return an empty string for the last name
       if (parts.length === 1) return "";
-      // Return the last element of the array as the last name
-      // This simplistic approach assumes the last name is the last part of the fullName
       return parts[parts.length - 1];
     }
   },
   mounted() {
-    this.fetchEvents(); // Call fetchTeacherNames when the component is mounted
+    this.fetchEvents(); 
   },
 }
 </script>
@@ -124,7 +120,7 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: space-between; /* Or space-around, depending on your preference */
+  justify-content: space-between; 
 }
 
 :deep(.v-field__overlay) {
