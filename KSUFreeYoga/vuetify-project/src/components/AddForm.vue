@@ -1,5 +1,5 @@
 <template>
-    <v-sheet class="pa-2 ma-2" style="background-color: #e5d5e0;">
+    <v-sheet class="pa-2 ma-2" style="background-color: #f5f5f5">
     
         <v-form ref="form" class="add-form">
             <v-row>
@@ -12,11 +12,8 @@
             <v-row>
                 <v-col>
                     <v-text-field
-                    label="Class Name"
-                    v-model="className"
-                    :rules="rules"
-                    required
-                    variant="outlined">
+                    label="Class Name" variant="outlined"
+                    v-model="className" :rules="rules" >
                     </v-text-field>
                 </v-col>
             </v-row> 
@@ -24,15 +21,9 @@
             <v-row>
                 <v-col cols="12" md="4">
                     <v-text-field
-                    label="Date in menu"
-                    :active="helpme"
-                    v-model="selectedDate"
-                    :rules="rules"
-                    readonly
-                    required
-                    variant="solo-filled"
-                    density="compact"
-                    >
+                    label="Date in menu" variant="solo-filled" density="compact"
+                    :active="helpme" v-model="selectedDate" :rules="rules"
+                    readonly>
                     <v-menu
                         v-model="helpme"
                         :close-on-content-click="false"
@@ -50,13 +41,9 @@
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col cols="12" md="3">
-                    <v-combobox
-                    density="compact"
-                    :items="getTimes"
-                    v-model="selectedStart"
-                    :rules="rules"
-                    variant="solo-filled"
-                    label="Start Time"
+                    <v-combobox 
+                    label="Start Time" variant="solo-filled" density="compact"
+                    :items="getTimes"  v-model="selectedStart" :rules="rules"
                     ></v-combobox>
                 </v-col>
                 
@@ -90,9 +77,39 @@
                     v-model="selectedInstructor">
                     </v-combobox>
                     <v-btn block variant="outlined" density="compact"
-                    style="background-color: #cbacc1"> 
+                    style="background-color: #cbacc1" @click="openInstructorDropdown"> 
                         Add New Instructor
                     </v-btn>
+                    <v-row v-if="showDropdown">
+                        <v-col cols="12">
+                            <v-text-field label="First Name"
+                            v-model="newInstructor.firstName"></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field label="Last Name"
+                            v-model="newInstructor.lastName"></v-text-field>
+                        </v-col>
+                        
+                        <v-col cols="12">
+                            <v-select
+                                :items="options"
+                                item-title="text"
+                                item-value="id"
+                                label="Certified?"
+                                v-model="newInstructor.certified" ></v-select>
+                        </v-col>
+                        <v-row justify="space-between">
+                            <v-col>
+                                <v-btn block density="compact"
+                                style="background-color: #927396" @click="addInstructortoClass">Add Instructor </v-btn>
+                            </v-col>
+                            <v-col>
+                                <v-btn block  density="compact"
+                                style="background-color: #f5f5f5" @click="showDropdown = false"> Close </v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-row>
+                    
                 </v-col>
             </v-row>
             
@@ -124,8 +141,7 @@
                     <v-select
                     variant="outlined"
                     density="compact"
-                    :items="matsOptions"
-                    
+                    :items="options"
                     item-title="text"
                     item-value="id"
                     label="Mats Provided?"
@@ -168,20 +184,14 @@
   
   <script>
   import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
-  
+  import { useInstructorsStore } from '@/stores/Instructors';
+
   export default {
     data() {
       return {
-        snackbar: false,
+        showDropdown: false,
         selectedStart: null,
         selectedEnd: null,
-        AMPM: ['AM', 'PM'],
-        startH: null,
-        startM: null,
-        startAMPM: null, 
-        endH: null,
-        endM: null,
-        endAMPM: null, 
         selectedLocation: null, 
         selectedInstructor: null, 
         selectedDate: null, // Bind the selected date to this data property
@@ -190,12 +200,14 @@
         className: null, 
         matsAvailable: true,
         classDescription: null,
+        newInstructor: { firstName: null, lastName: null, certified: true },
         locations: [], 
         teachers: [],
+        certified: true,
         rules: [
         v => !!v || 'Required',
         ],
-        matsOptions: [ 
+        options: [ 
             {text: 'Yes', id: true},
             {text: 'No', id: false}
         ]
@@ -218,6 +230,8 @@
                 id: location.LocationID
             }
         });
+        this.newInstructor = { firstName: null, lastName: null, certified: true }
+
     },
     reset () {
         this.$refs.form.reset();
@@ -256,12 +270,28 @@
     convertDateFormat (initialDate) {
         const date = new Date(initialDate);
         const year = date.getFullYear();
-        // getMonth() returns a 0-indexed month (0 for January, 1 for February, etc.)
-        // so we add 1 to get to the 1-indexed month and padStart to ensure two digits
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const day = date.getDate().toString().padStart(2, '0');
         return `${year}-${month}-${day}`;
     },
+    async addInstructortoClass() {
+        this.newInstructor.firstName.charAt(0).toUpperCase();
+        this.newInstructor.lastName.charAt(0).toUpperCase();
+       
+        const instructorsStore = useInstructorsStore();
+        await instructorsStore.addInstructor(this.newInstructor);
+
+        this.fetchEvents();
+        this.showDropdown = false;
+        this.selectedInstructor = {
+            text: `${this.newInstructor.firstName} ${this.newInstructor.lastName}`, 
+            id: instructorsStore.instructorID};
+
+    },
+    openInstructorDropdown() {
+        this.showDropdown = true,
+        this.selectedInstructor = null;
+    }
     },
     computed: {
     getTimes()

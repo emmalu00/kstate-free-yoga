@@ -119,7 +119,6 @@ export default {
       }, 
       async addClassToSchedule(newClass)
       {
-        console.log(newClass);
         const yogaClassesStore = useYogaClassesStore();
         await yogaClassesStore.addClass(newClass);
         this.snackbarAdd = true;

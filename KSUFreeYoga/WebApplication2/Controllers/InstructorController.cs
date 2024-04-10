@@ -53,7 +53,7 @@ namespace KSUFreeYogaAPI.Controllers
         }
 
 
-        [HttpPost]
+/*        [HttpPost]
         public JsonResult AddInstructor(Instructor instructor)
         {
             string query = $@"insert into Instructor (FirstName, LastName, Certified)
@@ -76,6 +76,34 @@ namespace KSUFreeYogaAPI.Controllers
                 }
             }
             return new JsonResult("Added Successfully");
+        }*/
+
+        [HttpPost]
+        public JsonResult AddInstructor(Instructor instructor)
+        {
+            string query = @"
+        INSERT INTO Instructor (FirstName, LastName, Certified)
+        VALUES (@FirstName, @LastName, @Certified);
+        SELECT CAST(SCOPE_IDENTITY() AS int);"; // Cast is optional depending on  ID column type
+
+            int newInstructorId = 0;
+            string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@FirstName", instructor.FirstName);
+                    myCommand.Parameters.AddWithValue("@LastName", instructor.LastName);
+                    myCommand.Parameters.AddWithValue("@Certified", instructor.Certified);
+
+                    // ExecuteScalar is used here because we expect a single value to be returned (the new ID)
+                    newInstructorId = (int)myCommand.ExecuteScalar();
+                }
+                myCon.Close();
+            }
+
+            return new JsonResult(newInstructorId);
         }
     }
 }

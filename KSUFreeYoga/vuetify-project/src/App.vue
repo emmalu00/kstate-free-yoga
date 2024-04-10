@@ -14,17 +14,14 @@
          </RouterLink>
       </v-app-bar>
       <router-view></router-view>
-      
+
     </v-main>
     
   </v-app>
 </template>
 
 <script setup>
-import YogaCalandar from './components/YogaCalandar.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
-import CalanderSample from './components/CalanderSample.vue';
-import TimeGrid from './components/TimeGrid.vue';
 
 import Events from './views/Events.vue'
 import FullCalendar from '@fullcalendar/vue3'
