@@ -36,8 +36,7 @@ namespace KSUFreeYogaAPI.Controllers
                 if (certified.HasValue) { whereClauses.Add("i.Certified = @Certified"); }
 
                 string whereClause = whereClauses.Any() ? "WHERE " + string.Join(" AND ", whereClauses) : string.Empty;
-                string query = $@"select i.FirstName, i.LastName, i.Certified
-                                from dbo.Instructor as i
+                string query = $@"select * from dbo.Instructor as i
                                 {whereClause}; ";
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))

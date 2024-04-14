@@ -4,6 +4,10 @@
  * Bootstraps Vuetify and other plugins then mounts the App`
  */
 
+// Styles
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+
 // Plugins
 import { registerPlugins } from '@/plugins'
 
@@ -24,7 +28,6 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 
 
 const app = createApp(App)
-
 
 app.component('font-awesome-icon', FontAwesomeIcon) // Register component globally
 library.add(fas) // Include needed solid icons

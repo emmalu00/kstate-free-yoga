@@ -8,7 +8,7 @@
         /// <summary>
         /// ID of location
         /// </summary>
-        public int InstructorID { get; }
+        public int ClassLocationID { get; }
 
         /// <summary>
         /// Building where a class is held 

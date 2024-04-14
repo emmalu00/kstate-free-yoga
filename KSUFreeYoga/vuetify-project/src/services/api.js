@@ -1,6 +1,6 @@
 // From Office Hourse Queue
 // https://www.bezkoder.com/vue-refresh-token/ 
-// Imports
+
 import axios from 'axios'
 
 const instance = axios.create({
@@ -10,5 +10,4 @@ const instance = axios.create({
     'Content-Type': 'application/json',
   },
 })
-
 export default instance
