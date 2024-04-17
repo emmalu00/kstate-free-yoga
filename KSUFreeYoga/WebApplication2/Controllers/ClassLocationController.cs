@@ -50,10 +50,10 @@ namespace KSUFreeYogaAPI.Controllers
         public JsonResult AddLocation(ClassLocation classLocation)
         {
             string query = $@"insert into dbo.ClassLocation (BuildingName, RoomNumber, LocationAddress)
-                            values (@BuildingName, @RoomNumber, @LocationAddress);";
-            DataTable table = new DataTable();
+                            values (@BuildingName, @RoomNumber, @LocationAddress);
+                            SELECT CAST(SCOPE_IDENTITY() AS int);";
+            int classLocationID = 0;
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
-            SqlDataReader myReader;
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
@@ -62,13 +62,13 @@ namespace KSUFreeYogaAPI.Controllers
                     myCommand.Parameters.AddWithValue("@BuildingName", classLocation.BuildingName);
                     myCommand.Parameters.AddWithValue("@RoomNumber", classLocation.RoomNumber);
                     myCommand.Parameters.AddWithValue("@LocationAddress", classLocation.LocationAddress);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
+                    classLocationID = (int)myCommand.ExecuteScalar();
+
+                   
                 }
+                myCon.Close();
             }
-            return new JsonResult("Added Successfully");
+            return new JsonResult(classLocationID);
         }
     }
 }

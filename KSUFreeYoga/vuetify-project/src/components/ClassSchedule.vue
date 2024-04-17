@@ -3,34 +3,41 @@
         <h1> Class Schedule </h1> 
     </div>
     <div>
-        <v-row no-gutters>
-        <v-col cols="2">
+      <v-row no-gutters>
+        <v-col cols="3">
           <FilterForm @FilteringYoga="receiveFilters" @ResetFilters="fetchEvents"> </FilterForm>
-          <!-- <AddForm @addingClass="addClassToSchedule"></AddForm> -->
           <v-sheet class="pa-2 ma-2">
             <v-card>
-              <v-btn @click="showAddForm = !showAddForm" block> Add Class </v-btn>
+              <v-btn @click="showAddForm = !showAddForm" block variant="outlined"> Add Class </v-btn>
             </v-card>
           </v-sheet>
-          
-          <v-dialog v-model="showAddForm" persistent style="width: 30%;">
+          <v-dialog v-model="showAddForm" persistent style="width: 60%;">
             <AddForm @addingClass="addClassToSchedule" @close="showAddForm = false"></AddForm>
           </v-dialog>
         </v-col>
         <v-col>
-            <Calendar :Yogaevents="testEvents"></Calendar>
+            <Calendar :Yogaevents="filteredEvents" @deletingClass="deleteClass"></Calendar>
         </v-col>
-        </v-row>
+      </v-row>
     </div>
+    <v-snackbar v-model="snackbarAdd" :timeout="3000"> Class successfully added. 
+      <template v-slot:actions>
+        <v-btn color="blue" variant="text"  @click="snackbar = false"> Close </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar v-model="snackbarDelete" :timeout="3000"> Class successfully deleted. 
+      <template v-slot:actions>
+        <v-btn color="blue" variant="text"  @click="snackbar = false"> Close </v-btn>
+      </template>
+    </v-snackbar>
 </template>
   
 <script>
-import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
+import { useYogaClassesStore } from '@/stores/YogaClasses'; 
 import FilterForm from './FilterForm.vue';
 import Calendar from './Calendar.vue';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import AddForm from './AddForm.vue';
-
 
 export default {
   components: {
@@ -45,96 +52,55 @@ export default {
           events: [], 
           eventClick: null,
         },
-      testEvents: [],
       filteredEvents: [], 
-      showAddForm: false
+      showAddForm: false,
+      snackbarAdd: false, 
+      snackbarDelete: false,
+      filters: { selectedInstructor: null, selectedInstructor: null, matsAvailable: null },
     }
   }, 
   methods: {
-    async fetchEvents() {
+      async receiveFilters() 
+      {
+        const firstName = this.filters.selectedInstructor ? this.filters.selectedInstructor.split(" ")[0] : null;
+        const lastName = this.filters.selectedInstructor ? this.filters.selectedInstructor.split(" ")[1] : null;
         const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.filterYogaClasses(null, null, null, null);
-        this.testEvents = yogaClassesStore.filteredClasses.map((yogaClass) => {
-          return {
-            title: yogaClass.ClassName,
-            date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
-            extendedProps: {
-              classID: yogaClass.ClassID,
-              startTime: yogaClass.StartTime,
-              endTime: yogaClass.EndTime,
-              instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
-              building: yogaClass.BuildingName,
-              room: yogaClass.RoomNumber, 
-              address: yogaClass.LocationAddress,
-              matsAvailable: yogaClass.MatsAvailable,
-              classDescription: yogaClass.ClassDescription,
-            },
-          };
-        });
-      },
-      combineDateTime(date, time) {
-        const newDate = date.substr(0, 10);
-        const dateTimeStr = `${newDate}T${time}`;
-        const dateTime = new Date(dateTimeStr);
-        return dateTime;
-      },
-      async receiveFilters(filters) {
-        console.log(filters);
-        const firstName = this.getFirstName(filters.selectedInstructor);
-        const lastName = this.getLastName(filters.selectedInstructor);
-        const yogaClassesStore = useYogaClassesStore();
-        await yogaClassesStore.filterYogaClasses(filters.selectedLocation, firstName, lastName, filters.matsAvailable);
+        await yogaClassesStore.filterYogaClasses(this.filters.selectedLocation, firstName, lastName, this.filters.matsAvailable);
         this.filteredEvents = yogaClassesStore.filteredClasses.map((yogaClass) => {
           return {
             title: yogaClass.ClassName,
-            date: this.combineDateTime(yogaClass.ClassDate, yogaClass.StartTime), 
+            date: new Date(`${yogaClass.ClassDate.substr(0, 10)}T${yogaClass.StartTime}`),
             extendedProps: {
-              classID: yogaClass.ClassID,
-              startTime: yogaClass.StartTime,
-              endTime: yogaClass.EndTime,
-              instructorName: this.getInstructorName(yogaClass.FirstName, yogaClass.LastName),
-              building: yogaClass.BuildingName,
-              room: yogaClass.RoomNumber, 
-              address: yogaClass.LocationAddress,
-              matsAvailable: yogaClass.MatsAvailable,
-              classDescription: yogaClass.ClassDescription,
+              yogaClass: yogaClass,
             },
           };
-        });;
-        this.testEvents = this.filteredEvents;
-        console.log(this.filteredEvents);
+        });
       }, 
       async addClassToSchedule(newClass)
       {
-
+        console.log(newClass);
         const yogaClassesStore = useYogaClassesStore();
         await yogaClassesStore.addClass(newClass);
-         // this.fetchEvents();
+        this.snackbarAdd = true;
+        this.receiveFilters();
       },
-      getInstructorName(first, last)
-      {
-        return `${first} ${last}`;
+      async deleteClass(classID) {
+        const yogaClassesStore = useYogaClassesStore();
+        await yogaClassesStore.deleteClass(classID);
+        this.fetchEvents();
+        this.snackbarDelete = true;
       },
-      getFirstName(fullName)
-      {
-        if (!fullName) return '';
-        return fullName.split(" ")[0];
-      }, 
-      getLastName(fullName)
-      {
-        if (!fullName) return '';
-        return fullName.split(" ")[1];;
-      }
   },
   mounted() {
-    this.fetchEvents();
+    this.receiveFilters();
   },
 }
 </script>
 
 <style scoped>
 h1 {
-    color: #b195c1;
+    color: #644874;
     text-align: center;
+    margin-top: 1%;
 }
 </style>

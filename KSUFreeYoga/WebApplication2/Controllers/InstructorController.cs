@@ -23,7 +23,7 @@ namespace KSUFreeYogaAPI.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetInstructors(bool? certified) //change this function to have optional parameters
+        public JsonResult GetInstructors(int? instructorID, bool? certified) //change this function to have optional parameters
         {
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
@@ -33,15 +33,17 @@ namespace KSUFreeYogaAPI.Controllers
                 myCon.Open();
                 List<string> whereClauses = new List<string>();
 
+                if (instructorID.HasValue) { whereClauses.Add("i.InstructorID = @InstructorID"); }
                 if (certified.HasValue) { whereClauses.Add("i.Certified = @Certified"); }
 
                 string whereClause = whereClauses.Any() ? "WHERE " + string.Join(" AND ", whereClauses) : string.Empty;
-                string query = $@"select i.FirstName, i.LastName, i.Certified
+                string query = $@"select *
                                 from dbo.Instructor as i
                                 {whereClause}; ";
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    if (instructorID.HasValue) { myCommand.Parameters.AddWithValue("@InstructorID", instructorID.Value); }
                     if (certified.HasValue) { myCommand.Parameters.AddWithValue("@Certified", certified.Value); }
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -53,7 +55,7 @@ namespace KSUFreeYogaAPI.Controllers
         }
 
 
-        [HttpPost]
+/*        [HttpPost]
         public JsonResult AddInstructor(Instructor instructor)
         {
             string query = $@"insert into Instructor (FirstName, LastName, Certified)
@@ -76,6 +78,34 @@ namespace KSUFreeYogaAPI.Controllers
                 }
             }
             return new JsonResult("Added Successfully");
+        }*/
+
+        [HttpPost]
+        public JsonResult AddInstructor(Instructor instructor)
+        {
+            string query = @"
+        INSERT INTO Instructor (FirstName, LastName, Certified)
+        VALUES (@FirstName, @LastName, @Certified);
+        SELECT CAST(SCOPE_IDENTITY() AS int);"; // Cast is optional depending on  ID column type
+
+            int newInstructorId = 0;
+            string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@FirstName", instructor.FirstName);
+                    myCommand.Parameters.AddWithValue("@LastName", instructor.LastName);
+                    myCommand.Parameters.AddWithValue("@Certified", instructor.Certified);
+
+                    // ExecuteScalar is used here because we expect a single value to be returned (the new ID)
+                    newInstructorId = (int)myCommand.ExecuteScalar();
+                }
+                myCon.Close();
+            }
+
+            return new JsonResult(newInstructorId);
         }
     }
 }

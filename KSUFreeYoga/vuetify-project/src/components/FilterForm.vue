@@ -1,76 +1,57 @@
 <template>
   <v-sheet class="pa-2 ma-2">
-    <v-card
-    :style="{ backgroundColor: '#f0f0f0' }">
+    <v-card variant="outlined">
     <v-form ref="form" class="filter-form">
       <h2> Filter </h2>
 
-      <v-row>
-        <v-col>
-          <p> Mats Available </p>
-          <v-btn-toggle
-          v-model="matsAvailable"
-          divided
-          density="compact">
-            <v-btn value="true"> Yes </v-btn>
-            <v-btn value="false"> No </v-btn>
-          </v-btn-toggle>
-        </v-col>
-      </v-row>
-      
-      
-      <v-select
-      :items="locations"
-      label="Location"
-      v-model="selectedLocation">
+      <v-select variant="outlined"  label="Mats Provided?"
+      :items="matsOptions" item-title="text" item-value="id" v-model="matsAvailable">
       </v-select>
 
-      <v-select
-      :items="teachers"
-      label="Instructor"
-      v-model="selectedInstructor">
+      <v-select variant="outlined" label="Location"
+      :items="locations" v-model="selectedLocation">
       </v-select>
 
-      <v-btn
-      @click="applyFilters">
-        Apply
-      </v-btn>
+      <v-select variant="outlined" label="Instructor"
+      :items="teachers" v-model="selectedInstructor">
+      </v-select>
 
-      <v-btn
-      @click="reset">
-        Reset Filters
-      </v-btn>
-      
+      <div class="button-container">
+        <v-btn class="filter-buttons" variant="outlined" @click="applyFilters"> Apply </v-btn>
+        <v-btn class="filter-buttons" variant="outlined" @click="reset"> Reset Filters </v-btn>
+      </div>
     </v-form>
     </v-card>
-    
   </v-sheet>
 </template>
 
 <script>
-import { useYogaClassesStore } from '@/stores/YogaClasses'; // Adjust the path to your store file
 import { useInstructorsStore } from '@/stores/Instructors';
+import { useLocationsStore } from '@/stores/ClassLocations';
 
 export default {
   data() {
     return {
-      teachers: [], // Data property to hold the teacher names
-      selectedInstructor: null, // Data property for the selected instructor
+      teachers: [], 
+      selectedInstructor: null, 
       locations: [], 
       selectedLocation: null, 
-      matsAvailable: null
+      matsAvailable: null,
+      matsOptions: [ 
+        {text: 'Yes', id: true},
+        {text: 'No', id: false}
+      ]
     }
   },
   methods: {
     async fetchEvents() {
-      const yogaClassesStore = useYogaClassesStore();
       const instructorsStore = useInstructorsStore();
-
-      await yogaClassesStore.fetchLocations();
-      await instructorsStore.fetchInstructors();
-
+      const classLocationsStore = useLocationsStore();
+      await instructorsStore.fetchInstructors(null);
+      await classLocationsStore.fetchLocations();
       this.teachers = instructorsStore.instructors.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
-      this.locations = yogaClassesStore.locations.map(location => location.BuildingName);
+      this.locations = classLocationsStore.classLocations.map(location => location.BuildingName);
+
     },
     reset () {
         this.$refs.form.reset();
@@ -89,31 +70,29 @@ export default {
       selectedInstructor: this.selectedInstructor
     });
     }, 
-    getFirstName(fullName)
-    {
-      return fullName.split(" ")[0];
-    }, 
-    getLastName(fullName)
-    {
-      // Split the fullName string into an array of words
-      const parts = fullName.split(" ");
-      // If there's only one part, return an empty string for the last name
-      if (parts.length === 1) return "";
-      // Return the last element of the array as the last name
-      // This simplistic approach assumes the last name is the last part of the fullName
-      return parts[parts.length - 1];
-    }
   },
   mounted() {
-    this.fetchEvents(); // Call fetchTeacherNames when the component is mounted
+    this.fetchEvents(); 
   },
 }
 </script>
 
 <style scoped>
 .filter-form {
-  padding: 2%
-  
+  padding: 2%;
+  background-color: #e5d5e0
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between; 
+}
+
+:deep(.v-field__overlay) {
+  background-color: white !important;
+}
+
+.filter-buttons {
+  background-color: #927396;
+}
 </style>
