@@ -47,7 +47,7 @@ export default {
     async fetchEvents() {
       const instructorsStore = useInstructorsStore();
       const classLocationsStore = useLocationsStore();
-      await instructorsStore.fetchInstructors();
+      await instructorsStore.fetchInstructors(null);
       await classLocationsStore.fetchLocations();
       this.teachers = instructorsStore.instructors.map(teacher => `${teacher.FirstName} ${teacher.LastName}`);
       this.locations = classLocationsStore.classLocations.map(location => location.BuildingName);

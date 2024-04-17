@@ -11,7 +11,7 @@
               <v-btn @click="showAddForm = !showAddForm" block variant="outlined"> Add Class </v-btn>
             </v-card>
           </v-sheet>
-          <v-dialog v-model="showAddForm" persistent style="width: 75%;">
+          <v-dialog v-model="showAddForm" persistent style="width: 60%;">
             <AddForm @addingClass="addClassToSchedule" @close="showAddForm = false"></AddForm>
           </v-dialog>
         </v-col>
@@ -78,10 +78,11 @@ export default {
       }, 
       async addClassToSchedule(newClass)
       {
+        console.log(newClass);
         const yogaClassesStore = useYogaClassesStore();
         await yogaClassesStore.addClass(newClass);
         this.snackbarAdd = true;
-        this.fetchEvents();
+        this.receiveFilters();
       },
       async deleteClass(classID) {
         const yogaClassesStore = useYogaClassesStore();

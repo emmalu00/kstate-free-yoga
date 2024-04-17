@@ -131,7 +131,15 @@
         return `${first} ${last}`;
       },
     },
-    
+             // await instructorsStore.fetchInstructorByID(instructorsStore.instructorID);
+            // this.selectedInstructor = {
+            //     text: `${instructorsStore.instructor[0].FirstName} ${instructorsStore.instructor[0].LastName}`, 
+            //     id: instructorsStore.instructorID
+            // }
+            // this.$refs.instructorForm.reset();
+            // this.showDropdownInstructor = false;
+            // this.fetchEvents();
+            // console.log(this.selectedInstructor);
   }
 </script>  
 

@@ -17,12 +17,13 @@ export const useLocationsStore = defineStore('locations', {
     },
     async addClassLocation(newClassLocation)
     {
+      console.log(newClassLocation);
       try {
         const response = await api.post('/ClassLocation', newClassLocation);
         this.classLocationID = response.data;
         if (response.data) { console.log('Location added successfully:', response.data); }
       } 
-      catch (error) { console.error('Error adding yoga class:', error); }
+      catch (error) { console.error('Error adding class location:', error); }
     },
   },
 });

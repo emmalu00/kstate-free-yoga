@@ -4,16 +4,29 @@ import api from '@/services/api';
 export const useInstructorsStore = defineStore('instructors', {
   state: () => ({
     instructors: [], 
+    instructor: [], 
     instructorID: 0,
   }),
   actions: {
-    async fetchInstructors() 
-    {
+    async fetchInstructors(certified) {
       try {
-        const response = await api.get(`/Instructor`);
+        let queryParams = new URLSearchParams();
+
+        if (certified) { queryParams.set('certified', certified); }
+   
+        const queryString = queryParams.toString();
+        const response = await api.get(`/Instructor${queryString ? `?${queryString}` : ''}`);
         this.instructors = response.data;
       } 
       catch (error) { console.error('Error fetching yoga classes:', error); }
+    },
+    async fetchInstructorByID(instructorID) 
+    {
+      try {
+        const response = await api.get(`/Instructor?instructorID=${instructorID}`);
+        this.instructor = response.data;
+      } 
+      catch (error) { console.error('Error fetching instructor:', error); }
     },
     async addInstructor(newInstructor)
     {
@@ -22,7 +35,8 @@ export const useInstructorsStore = defineStore('instructors', {
         this.instructorID = response.data;
         if (response.data) { console.log('Instructor added successfully:', response.data); }
       } 
-      catch (error) { console.error('Error adding yoga class:', error); }
+      catch (error) {console.error('Error adding yoga class:', error);
+      }
     },
   },
 });

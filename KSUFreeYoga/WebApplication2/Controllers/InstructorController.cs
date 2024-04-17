@@ -23,7 +23,7 @@ namespace KSUFreeYogaAPI.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetInstructors(bool? certified) //change this function to have optional parameters
+        public JsonResult GetInstructors(int? instructorID, bool? certified) //change this function to have optional parameters
         {
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("Ksufreeyoga");
@@ -33,14 +33,17 @@ namespace KSUFreeYogaAPI.Controllers
                 myCon.Open();
                 List<string> whereClauses = new List<string>();
 
+                if (instructorID.HasValue) { whereClauses.Add("i.InstructorID = @InstructorID"); }
                 if (certified.HasValue) { whereClauses.Add("i.Certified = @Certified"); }
 
                 string whereClause = whereClauses.Any() ? "WHERE " + string.Join(" AND ", whereClauses) : string.Empty;
-                string query = $@"select * from dbo.Instructor as i
+                string query = $@"select *
+                                from dbo.Instructor as i
                                 {whereClause}; ";
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    if (instructorID.HasValue) { myCommand.Parameters.AddWithValue("@InstructorID", instructorID.Value); }
                     if (certified.HasValue) { myCommand.Parameters.AddWithValue("@Certified", certified.Value); }
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
