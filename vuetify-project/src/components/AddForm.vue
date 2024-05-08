@@ -320,8 +320,7 @@ export default {
             }
 
             const start = new Date();
-            start.setHours(hours, minutes, 0); // Set hours, minutes, and seconds
-
+            start.setHours(hours, minutes, 0); 
             start.setMinutes(start.getMinutes() + duration);
 
             const endHours = start.getHours().toString().padStart(2, '0');
@@ -347,9 +346,9 @@ export default {
         }, 
         getStartTimes() {
             const times = [];
-            for (let hour = 6; hour <= 20; hour++) { // Adjusted to include hour 20
+            for (let hour = 6; hour <= 20; hour++) { 
                 for (let minute = 0; minute < 60; minute += 5) {
-                    // Special case for 8:00 PM to only add the :00 minute
+                  
                     if (hour === 20 && minute > 0) {
                         continue;
                     }

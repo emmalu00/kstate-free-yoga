@@ -149,7 +149,7 @@ export default {
             const yogaClasses = yogaClassStore.filteredClasses;
             const currentDate = new Date();
             console.log(yogaClasses);
-            yogaClasses.forEach(item => { // Correct iteration over array elements
+            yogaClasses.forEach(item => { 
                 if (new Date(item.ClassDate) > currentDate) {
                     this.upcomingClasses.push(item);
                 }
@@ -185,7 +185,6 @@ export default {
             const today = new Date();
             const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
 
-            // Create a map to count classes attended by each instructor in the last 30 days
             const instructorCount = {};
             const timeRanges = {
                 morning: { count: 0, range: [6, 11] },

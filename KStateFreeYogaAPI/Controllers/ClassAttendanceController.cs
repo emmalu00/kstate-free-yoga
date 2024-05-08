@@ -75,7 +75,6 @@ namespace KStateFreeYogaAPI.Controllers
             {
                 myCon.Open();
 
-                // Retrieve the ClassDate and StartTime for the given classID
                 string queryClassDateTime = "SELECT ClassDate, StartTime FROM dbo.YogaClass WHERE ClassID = @ClassID";
                 SqlCommand myCommandClassDateTime = new SqlCommand(queryClassDateTime, myCon);
                 myCommandClassDateTime.Parameters.AddWithValue("@ClassID", classID);
@@ -96,10 +95,8 @@ namespace KStateFreeYogaAPI.Controllers
                     return new JsonResult("No such class exists.");
                 }
 
-                // Combine ClassDate and StartTime to form AttendanceDate as a string
                 string attendanceDateAsString = classDate.Date.ToString("yyyy-MM-dd") + " " + startTime.ToString(@"hh\:mm\:ss");
 
-                // Insert the new ClassAttendance record
                 string queryInsert = @"
                     INSERT INTO dbo.ClassAttendance (UserID, ClassID, AttendanceDate, AttendanceStatus, Favorited)
                     VALUES (@UserID, @ClassID, CONVERT(DATETIME, @AttendanceDate, 120), 'attended', 0);";
@@ -127,7 +124,6 @@ namespace KStateFreeYogaAPI.Controllers
             {
                 myCon.Open();
 
-                // Retrieve the ClassDate for the given classID
                 string queryDelete = "delete from dbo.classattendance where AttendanceID = @AttendanceID"; ;
                 using (SqlCommand myCommandDelete = new SqlCommand(queryDelete, myCon))
                 {

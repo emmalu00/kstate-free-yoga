@@ -76,7 +76,6 @@ namespace KStateFreeYogaAPI.Controllers
             {
                 myCon.Open();
 
-                // Check if the instructor already exists
                 string queryCheck = @"
                     select InstructorID from dbo.instructor
                     where FirstName = @FirstName and LastName = @LastName";
@@ -89,10 +88,9 @@ namespace KStateFreeYogaAPI.Controllers
                     object existingInstructorId = myCommandCheck.ExecuteScalar();
                     if (existingInstructorId != null)
                     {
-                        return new JsonResult(existingInstructorId); // Return existing instructor ID if found
+                        return new JsonResult(existingInstructorId); 
                     }
                 }
-                // Insert new instructor if not already existing
 
                 string queryInsert = @"
                     insert into instructor (FirstName, LastName, Certified)

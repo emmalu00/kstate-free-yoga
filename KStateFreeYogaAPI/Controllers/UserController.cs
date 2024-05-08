@@ -33,7 +33,6 @@ namespace KStateFreeYogaAPI.Controllers
                 return Unauthorized();
             }
 
-            // Use the UserID to get information from the database
             DataTable table = new DataTable();
             string query = "SELECT * FROM dbo.Users WHERE UserID = @UserID";
 
@@ -53,7 +52,6 @@ namespace KStateFreeYogaAPI.Controllers
                 myCon.Close();
             }
 
-            // Convert the DataTable to a model if necessary, or just return the JSON result
             return new JsonResult(table);
         }
 

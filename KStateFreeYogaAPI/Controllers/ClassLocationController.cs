@@ -64,7 +64,6 @@ namespace KStateFreeYogaAPI.Controllers
             {
                 myCon.Open();
 
-                // Check if the location already exists
                 string queryCheck = @"
                     select LocationID from dbo.classlocation
                     where BuildingName = @BuildingName and RoomNumber = @RoomNumber";
@@ -77,11 +76,10 @@ namespace KStateFreeYogaAPI.Controllers
                     object existingLocationId = myCommandCheck.ExecuteScalar();
                     if (existingLocationId != null)
                     {
-                        return new JsonResult(existingLocationId); // Return existing location ID if found
+                        return new JsonResult(existingLocationId);
                     }
                 }
 
-                // Insert new location if not already existing
                 string queryInsert = @"
                     insert into dbo.classlocation (BuildingName, RoomNumber, LocationAddress)
                     values (@BuildingName, @RoomNumber, @LocationAddress);
